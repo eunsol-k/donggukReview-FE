@@ -52,7 +52,7 @@
   font-size: 14px;
 }
 
-.restaurant-edit-form .menu-item button {
+.restaurant-edit-form .menu-item .delete-menu-button {
   background-color: #ff4b4b;
   color: #fff;
   padding: 6px 10px; /* 버튼 크기 축소 */
@@ -67,11 +67,11 @@
   justify-content: center; /* 텍스트와 버튼 내용 수평 중앙 정렬 */
 }
 
-.restaurant-edit-form .menu-item button:hover {
+.restaurant-edit-form .menu-item .delete-menu-button:hover {
   background-color: #ff6b6b;
 }
 
-.restaurant-edit-form button.add-menu-button {
+.restaurant-edit-form .add-menu-button {
   padding: 8px 12px; /* 버튼 패딩 축소 */
   font-size: 14px;
   color: #ffffff;
@@ -84,12 +84,12 @@
   align-self: center;
 }
 
-.restaurant-edit-form button.add-menu-button:hover {
+.restaurant-edit-form .add-menu-button:hover {
   background-color: #a777e3;
   transform: translateY(-2px);
 }
 
-.restaurant-edit-form button[type="submit"] {
+.restaurant-edit-form .save-button {
   padding: 10px 20px; /* 저장 버튼 패딩 조정 */
   font-size: 14px; /* 폰트 크기 조정 */
   color: #ffffff;
@@ -101,7 +101,7 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.restaurant-edit-form button[type="submit"]:hover {
+.restaurant-edit-form .save-button:hover {
   background-color: #a777e3;
   transform: translateY(-2px);
 }

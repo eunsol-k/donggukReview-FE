@@ -49,9 +49,9 @@ function App() {
         { name: '떡볶이', price: 6000 },
       ],
     },
-  ]); // 사용자별 좋아요한 가게
+  ]);
 
-  const [reviews, setReviews] = useState([]); // 사용자별 작성한 리뷰
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     fetchLikedRestaurants(userInfo.userId);
@@ -59,8 +59,7 @@ function App() {
   }, [userInfo]);
 
   const fetchLikedRestaurants = (userId) => {
-    // 이 함수는 이제 예제 데이터를 초기화할 때만 호출됩니다.
-    // 실제 백엔드 연동 시 API 호출을 여기에 추가할 수 있습니다.
+    // 예제 데이터 초기화 시 호출
   };
 
   const fetchUserReviews = (userId) => {
@@ -127,9 +126,9 @@ function App() {
   const handleLikeToggle = (restaurant) => {
     setLikedRestaurants((prevLiked) => {
       if (prevLiked.some((r) => r.name === restaurant.name)) {
-        return prevLiked.filter((r) => r.name !== restaurant.name); // 좋아요 취소
+        return prevLiked.filter((r) => r.name !== restaurant.name);
       } else {
-        return [...prevLiked, restaurant]; // 좋아요 추가
+        return [...prevLiked, restaurant];
       }
     });
   };
@@ -142,6 +141,11 @@ function App() {
     <Router>
       <div className="app-container">
         <Header />
+        <div className="admin-toggle-container">
+          <button onClick={toggleAdminMode} className="toggle-admin-button">
+            {isAdmin ? '일반 모드로 전환' : '관리자 모드로 전환'}
+          </button>
+        </div>
         <div className="content">
           <div className="left-section">
             <p>Left Section</p>
@@ -154,12 +158,12 @@ function App() {
                 element={
                   isEditingRestaurant ? (
                     <RestaurantEditForm
-                      restaurant={likedRestaurants[0]} // 예제이므로 첫 번째 좋아요한 식당을 수정 대상으로
+                      restaurant={likedRestaurants[0]}
                       onSave={handleRestaurantSave}
                     />
                   ) : (
                     <Detail
-                      restaurant={likedRestaurants[0]} // 예제이므로 첫 번째 좋아요한 식당을 디테일에 전달
+                      restaurant={likedRestaurants[0]}
                       reviews={reviews.filter(
                         (review) => review.restaurant === likedRestaurants[0]?.name
                       )}
@@ -188,20 +192,24 @@ function App() {
             </Routes>
           </div>
           <div className="right-section">
-            <Sidebar
-              username={userInfo.username}
-              userId={userInfo.userId}
-              likedStores={likedRestaurants.length}
-              averageRating={4.3}
-              isAdmin={isAdmin}
-              isEditingRestaurant={isEditingRestaurant}
-              isDeleteMode={isDeleteMode}
-              onEditRestaurant={handleEditRestaurant}
-              onDeleteReviews={handleDeleteReviews}
-            />
-            <button onClick={toggleAdminMode} className="toggle-admin-button">
-              {isAdmin ? '일반 모드로 전환' : '관리자 모드로 전환'}
-            </button>
+            <Routes>
+              <Route
+                path="/details"
+                element={
+                  <Sidebar
+                    username={userInfo.username}
+                    userId={userInfo.userId}
+                    likedStores={likedRestaurants.length}
+                    averageRating={4.3}
+                    isAdmin={isAdmin}
+                    isEditingRestaurant={isEditingRestaurant}
+                    isDeleteMode={isDeleteMode}
+                    onEditRestaurant={handleEditRestaurant}
+                    onDeleteReviews={handleDeleteReviews}
+                  />
+                }
+              />
+            </Routes>
           </div>
         </div>
       </div>

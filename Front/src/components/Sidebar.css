@@ -1,13 +1,11 @@
 .sidebar {
   background-color: #ffffff;
-  padding: 20px; /* 패딩 줄이기 */
-  border-radius: 12px; /* 둥근 모서리 크기 줄이기 */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px; /* 패딩 줄이기 */
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
-  width: 220px; /* 사이드바 너비 줄이기 */
+  width: 250px; /* 사이드바 너비 줄이기 */
 }
 
 .sidebar .profile-section {

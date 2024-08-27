@@ -131,7 +131,7 @@ function RestaurantEditForm({ restaurant, onSave }) {
       <div>
         <label>메뉴:</label>
         {updatedRestaurant.menu?.map((item, index) => (
-          <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+          <div key={index} className="menu-item">
             <input
               type="text"
               name={`menu-name-${index}`}
@@ -149,15 +149,15 @@ function RestaurantEditForm({ restaurant, onSave }) {
             <button
               type="button"
               onClick={() => handleDeleteMenu(index)}
-              style={{ marginLeft: '10px' }}
+              className="delete-menu-button"
             >
               삭제
             </button>
           </div>
         ))}
-        <button onClick={handleAddMenu}>메뉴 추가</button>
+        <button onClick={handleAddMenu} className="add-menu-button">메뉴 추가</button>
       </div>
-      <button onClick={handleSave}>저장</button>
+      <button onClick={handleSave} className="save-button">저장</button>
     </div>
   );
 }
