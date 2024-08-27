@@ -40,20 +40,6 @@ function Detail({
           />
         </div>
       </div>
-
-      <div className="right-sidebar">
-{/*         <Sidebar */}
-{/*           username={user?.username || 'Guest'} */}
-{/*           userId={user?.id || ''} */}
-{/*           likedStores={likedStores} */}
-{/*           averageRating={averageRating} */}
-{/*           isAdmin={isAdmin} */}
-{/*           onEditRestaurant={onEditRestaurant} */}
-{/*           isDeleteMode={isDeleteMode} */}
-{/*           isEditingRestaurant={isEditingRestaurant} */}
-{/*           onDeleteReviews={onDeleteReviews} */}
-{/*         /> */}
-      </div>
     </div>
   );
 }
