@@ -1,0 +1,137 @@
+.review-list {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 16px;
+}
+
+.sort-options {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.sort-options label {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+.sort-options select {
+  margin-left: 10px;
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.review-item {
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.review-profile {
+  margin-right: 15px;
+}
+
+.profile-img, .profile-placeholder {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-placeholder {
+  background-color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+}
+
+.review-author {
+  display: flex;
+  flex-direction: column;
+}
+
+.review-userid {
+  font-size: 14px;
+  color: #666;
+}
+
+.review-date {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.review-content {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.review-ratings {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+.star-rating {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.star-rating.large .star {
+  font-size: 18px;
+}
+
+.star-rating.medium .star {
+  font-size: 14px;
+}
+
+.star-rating.small .star {
+  font-size: 12px;
+}
+
+.star {
+  color: #ddd;
+}
+
+.star.filled {
+  color: #f5a623;
+}
+
+.star.half-filled {
+  position: relative;
+}
+
+.star.half-filled::before {
+  content: '★';
+  position: absolute;
+  left: 0;
+  width: 50%;
+  overflow: hidden;
+  color: #f5a623;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .review-list {
+    padding: 15px;
+  }
+
+  .review-item {
+    padding: 15px;
+  }
+}

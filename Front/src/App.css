@@ -1,0 +1,49 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+/* 왼쪽 섹션 스타일 */
+.left-section {
+  width: 20%; /* 왼쪽 섹션 너비 */
+  background-color: #ffffff;
+  border-right: 1px solid #ddd;
+  padding: 20px;
+}
+
+.middle-section {
+  width: 60%; /* 중간 섹션 너비 */
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.right-section {
+  width: 20%; /* 오른쪽 섹션 너비 */
+  padding: 20px;
+  background-color: #ffffff;
+  border-left: 1px solid #ddd;
+}
+
+.toggle-admin-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.toggle-admin-button:hover {
+  background-color: #2980b9;
+}
