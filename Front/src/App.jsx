@@ -1,3 +1,6 @@
+
+
+
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
@@ -6,12 +9,16 @@ import Home from './pages/Home';
 import Detail from './pages/Detail';
 import Profile from './pages/Profile';
 import RestaurantEditForm from './components/RestaurantEditForm';
+import CategoryDisplay from './components/CategoryDisplay';
+import LoginSection from './components/LoginSection'; // 로그인 섹션 컴포넌트
+import UserProfile from './components/UserProfile'; // 사용자 프로필 컴포넌트
 import './App.css';
 
 function App() {
   const [isEditingRestaurant, setIsEditingRestaurant] = useState(false);
   const [isAdmin, setIsAdmin] = useState(true);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState(null); // 로그인 사용자 상태 추가
 
   const [userInfo, setUserInfo] = useState({
     username: '홍길동',
@@ -137,6 +144,10 @@ function App() {
     setIsAdmin(!isAdmin);
   };
 
+  const handleLogout = () => {
+    setLoggedInUser(null);
+  };
+
   return (
     <Router>
       <div className="app-container">
@@ -148,7 +159,10 @@ function App() {
         </div>
         <div className="content">
           <div className="left-section">
-            <p>Left Section</p>
+            <Routes>
+              <Route path="/"
+                element={<CategoryDisplay />} />
+            </Routes>
           </div>
           <div className="middle-section">
             <Routes>
@@ -207,6 +221,22 @@ function App() {
                     onEditRestaurant={handleEditRestaurant}
                     onDeleteReviews={handleDeleteReviews}
                   />
+                }
+              />
+              <Route
+                path="/"
+                element={
+                  loggedInUser ? (
+                    <UserProfile
+                      nickname={loggedInUser.nickname}
+                      image={loggedInUser.image}
+                      likes={loggedInUser.likes}
+                      reviews={loggedInUser.reviews}
+                      onLogout={handleLogout}
+                    />
+                  ) : (
+                    <LoginSection setLoggedInUser={setLoggedInUser} />
+                  )
                 }
               />
             </Routes>
