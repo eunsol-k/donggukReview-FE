@@ -3,19 +3,15 @@ import ProfileSection from '../components/ProfileSection';
 import ReviewList from '../components/ReviewList';
 import './Profile.css';
 
-function ProfilePage() {
-  const [userInfo, setUserInfo] = useState({
-    username: '홍길동',
-    userId: 'user123',
-    profilePicture: 'https://via.placeholder.com/80',
-  });
-
+function ProfilePage({ userInfo }) {
   const [likedRestaurants, setLikedRestaurants] = useState([]);
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    fetchUserData();
-  }, []);
+    if (userInfo) {
+      fetchUserData();
+    }
+  }, [userInfo]);
 
   const fetchUserData = async () => {
     const storedFavorites = JSON.parse(localStorage.getItem('favoriteRestaurants')) || [];
@@ -41,10 +37,10 @@ function ProfilePage() {
     setReviews(exampleReviews);
   };
 
-  const clearFavorites = () => {
-    localStorage.removeItem('favoriteRestaurants');
-    setLikedRestaurants([]); // 좋아요 리스트를 빈 배열로 초기화
-  };
+  if (!userInfo) {
+    // userInfo가 없을 때는 로딩 상태나 로그인 필요 메시지를 표시할 수 있습니다.
+    return <div>로그인이 필요합니다.</div>;
+  }
 
   return (
     <div className="profile-page">

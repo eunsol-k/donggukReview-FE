@@ -9,14 +9,12 @@ const LoginSection = ({ setLoggedInUser }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // 임의 계정 확인
     if (username === 'admin' && password === '1234') {
-      alert('로그인 성공!');
-      // 임의로 토큰 생성 (실제 구현에서는 서버로부터 JWT 토큰 등을 받게 됨)
+      // 관리자 로그인
+      alert('관리자 로그인 성공!');
       const token = 'dummy-token';
       localStorage.setItem('token', token);
 
-      // 임의의 좋아요 수와 후기 수
       const likes = 42;
       const reviews = 15;
 
@@ -26,6 +24,24 @@ const LoginSection = ({ setLoggedInUser }) => {
         token: token,
         likes: likes,
         reviews: reviews,
+        isAdmin: true,
+      });
+    } else if (username && password) {
+      // 일반 사용자 로그인
+      alert('일반 사용자 로그인 성공!');
+      const token = 'dummy-token';
+      localStorage.setItem('token', token);
+
+      const likes = 20;
+      const reviews = 5;
+
+      setLoggedInUser({
+        nickname: username,
+        image: 'https://via.placeholder.com/100',
+        token: token,
+        likes: likes,
+        reviews: reviews,
+        isAdmin: false,
       });
     } else {
       alert('로그인 실패: 잘못된 자격 증명');

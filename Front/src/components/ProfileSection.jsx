@@ -8,6 +8,11 @@ function ProfileSection({ userInfo }) {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  if (!userInfo) {
+    // userInfo가 없을 때는 로딩 상태나 기본 메시지를 표시할 수 있습니다.
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="profile-section">
       <div className="profile-info">

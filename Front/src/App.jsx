@@ -13,14 +13,9 @@ import './App.css';
 
 function App() {
   const [isEditingRestaurant, setIsEditingRestaurant] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false); // 관리자 여부를 false로 초기화
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null); // 로그인 사용자 상태 추가
-
-  const [userInfo, setUserInfo] = useState({
-    username: '홍길동',
-    userId: 'user123',
-  });
 
   const [likedRestaurants, setLikedRestaurants] = useState([
     {
@@ -58,9 +53,11 @@ function App() {
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    fetchLikedRestaurants(userInfo.userId);
-    fetchUserReviews(userInfo.userId);
-  }, [userInfo]);
+    if (loggedInUser) {
+      fetchLikedRestaurants(loggedInUser.userId);
+      fetchUserReviews(loggedInUser.userId);
+    }
+  }, [loggedInUser]);
 
   const fetchLikedRestaurants = (userId) => {
     // 예제 데이터 초기화 시 호출
@@ -71,7 +68,7 @@ function App() {
       {
         id: 1,
         restaurant: 'Restaurant 1',
-        userId: 'user123',
+        userId: userId,
         profilePicture: 'https://via.placeholder.com/50',
         date: '2023-08-01',
         content: '맛있어요!',
@@ -84,7 +81,7 @@ function App() {
       {
         id: 2,
         restaurant: 'Restaurant 2',
-        userId: 'user123',
+        userId: userId,
         profilePicture: 'https://via.placeholder.com/50',
         date: '2023-08-02',
         content: '괜찮은 식당이에요!',
@@ -121,7 +118,7 @@ function App() {
     const reviewWithUserInfo = {
       ...newReview,
       id: reviews.length + 1,
-      userId: userInfo.userId,
+      userId: loggedInUser.userId, // loggedInUser에서 userId 가져오기
       date: new Date().toISOString().split('T')[0],
     };
     setReviews([...reviews, reviewWithUserInfo]);
@@ -137,23 +134,15 @@ function App() {
     });
   };
 
-  const toggleAdminMode = () => {
-    setIsAdmin(!isAdmin);
-  };
-
   const handleLogout = () => {
     setLoggedInUser(null);
+    setIsAdmin(false); // 로그아웃 시 관리자 모드 초기화
   };
 
   return (
     <Router>
       <div className="app-container">
         <Header />
-        <div className="admin-toggle-container">
-          <button onClick={toggleAdminMode} className="toggle-admin-button">
-            {isAdmin ? '일반 모드로 전환' : '관리자 모드로 전환'}
-          </button>
-        </div>
         <div className="content">
           <div className="left-section">
             <Routes>
@@ -183,6 +172,7 @@ function App() {
                       onSubmitReview={handleReviewSubmit}
                       onLike={handleLikeToggle}
                       likedRestaurants={likedRestaurants}
+                      userInfo={loggedInUser} // 로그인된 사용자 정보 전달
                     />
                   )
                 }
@@ -191,10 +181,10 @@ function App() {
                 path="/profile"
                 element={
                   <Profile
-                    userInfo={userInfo}
+                    userInfo={loggedInUser} // 로그인된 사용자 정보 전달
                     likedRestaurants={likedRestaurants}
                     reviews={reviews.filter(
-                      (review) => review.userId === userInfo.userId
+                      (review) => review.userId === loggedInUser?.userId
                     )}
                   />
                 }
@@ -209,8 +199,8 @@ function App() {
                   loggedInUser ? (
                     isAdmin ? (
                       <Sidebar
-                        username={userInfo.username}
-                        userId={userInfo.userId}
+                        username={loggedInUser.nickname}
+                        userId={loggedInUser.userId}
                         likedStores={likedRestaurants.length}
                         averageRating={4.3}
                         isAdmin={isAdmin}
