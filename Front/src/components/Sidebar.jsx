@@ -3,7 +3,7 @@ import './Sidebar.css';
 
 function Sidebar({ username, userId, likedStores, averageRating, isAdmin, onEditRestaurant, isDeleteMode, isEditingRestaurant, onDeleteReviews }) {
   return (
-    <aside className="sidebar">
+    <div className="sidebar">
       <div className="profile-section">
         <div className="sidebar-profile-pic">
           <img src="https://via.placeholder.com/80" alt="User" className="sidebar-profile-img" />
@@ -27,7 +27,7 @@ function Sidebar({ username, userId, likedStores, averageRating, isAdmin, onEdit
           </button>
         </div>
       )}
-    </aside>
+    </div>
   );
 }
 
