@@ -172,7 +172,7 @@ function App() {
                       onSubmitReview={handleReviewSubmit}
                       onLike={handleLikeToggle}
                       likedRestaurants={likedRestaurants}
-                      userInfo={loggedInUser} // 로그인된 사용자 정보 전달
+                      user={loggedInUser} // 로그인된 사용자 정보 전달
                     />
                   )
                 }

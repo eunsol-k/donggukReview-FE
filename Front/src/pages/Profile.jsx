@@ -14,27 +14,37 @@ function ProfilePage({ userInfo }) {
   }, [userInfo]);
 
   const fetchUserData = async () => {
+    // 로컬 스토리지에서 좋아요한 음식점 불러오기
     const storedFavorites = JSON.parse(localStorage.getItem('favoriteRestaurants')) || [];
     const exampleLikedRestaurants = storedFavorites.map(id => ({
       name: `Restaurant ${id}`,
       category: ['카페'],
     }));
 
+    // 예제 리뷰 데이터 (실제 구현에서는 API 호출로 대체)
     const exampleReviews = [
       {
         restaurant: 'Restaurant 1',
+        userId: userInfo.userId, // userInfo를 이용하여 사용자 ID 연결
         content: '정말 맛있어요!',
         date: '2023-08-01',
       },
       {
         restaurant: 'Restaurant 2',
+        userId: userInfo.userId,
         content: '서비스가 정말 좋았습니다!',
         date: '2023-08-02',
       },
     ];
 
     setLikedRestaurants(exampleLikedRestaurants);
-    setReviews(exampleReviews);
+    setReviews(exampleReviews.filter(review => review.userId === userInfo.userId)); // 사용자 리뷰만 필터링
+  };
+
+  const clearFavorites = () => {
+    // 좋아요한 음식점 초기화
+    localStorage.removeItem('favoriteRestaurants');
+    setLikedRestaurants([]); // 초기화 후 빈 배열로 설정
   };
 
   if (!userInfo) {
@@ -44,7 +54,7 @@ function ProfilePage({ userInfo }) {
 
   return (
     <div className="profile-page">
-      <ProfileSection userInfo={userInfo} />
+      <ProfileSection userInfo={userInfo} /> {/* 메인 페이지와 동일한 프로필 정보 표시 */}
 
       <div className="profile-section liked-restaurants-section">
         <h3>좋아요 한 음식점</h3>
