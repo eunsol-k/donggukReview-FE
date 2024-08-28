@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const SearchSection = () => {
   const [query, setQuery] = useState('');
@@ -39,9 +40,11 @@ const SearchSection = () => {
       <div style={styles.container}>
         {filteredResults.map((restaurant, index) => (
           <div key={index} style={styles.card}>
-            <img src={restaurant.Image} alt={restaurant.Name} style={styles.image} />
-            <h3>{restaurant.Name}</h3>
-            <p>{restaurant.Category}</p>
+            <Link to={`/restaurants/${restaurant.id}`}>
+              <img src={restaurant.Image} alt={restaurant.Name} style={styles.image} />
+              <h3>{restaurant.Name}</h3>
+              <p>{restaurant.Category}</p>
+            </Link>
           </div>
         ))}
       </div>

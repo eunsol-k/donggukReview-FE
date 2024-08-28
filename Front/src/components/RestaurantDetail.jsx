@@ -1,30 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
 import './RestaurantDetail.css';
 
-function RestaurantDetail({ restaurant }) {
-  const { id, name, category, rating, reviewCount, address, phone, image, menu } = restaurant;
+function RestaurantDetail({ restaurants }) {
+  const { id } = useParams();
+  const restaurant = restaurants.find((r) => r.id === parseInt(id));
+
+  if (!restaurant) {
+    return <p>음식점을 찾을 수 없습니다.</p>;
+  }
+
+  const { name, category, rating, reviewCount, address, phone, image, menu } = restaurant;
   const [isFavorite, setIsFavorite] = useState(false);
-  const [averageRating, setAverageRating] = useState(0);
+  const [averageRating, setAverageRating] = useState(rating);
   const [reviews, setReviews] = useState([]); // State to manage reviews
   const [newReview, setNewReview] = useState(''); // State to manage new review
 
   useEffect(() => {
-    if (reviewCount > 0) {
-      setAverageRating(rating);
-    }
-
-    const favoriteRestaurants = JSON.parse(localStorage.getItem('favoriteRestaurants')) || [];
-    setIsFavorite(favoriteRestaurants.includes(id));
-  }, [rating, reviewCount, id]);
+    const favoriteRestaurants = JSON.parse(localStorage.getItem('favoriteRestaurants') || '[]');
+    setIsFavorite(favoriteRestaurants.includes(restaurant.id));
+  }, [restaurant.id]);
 
   const toggleFavorite = () => {
-    let favoriteRestaurants = JSON.parse(localStorage.getItem('favoriteRestaurants')) || [];
+    let favoriteRestaurants = JSON.parse(localStorage.getItem('favoriteRestaurants') || '[]');
 
     if (isFavorite) {
-      favoriteRestaurants = favoriteRestaurants.filter(favId => favId !== id);
+      favoriteRestaurants = favoriteRestaurants.filter((favId) => favId !== restaurant.id);
     } else {
-      favoriteRestaurants.push(id);
+      favoriteRestaurants.push(restaurant.id);
     }
 
     localStorage.setItem('favoriteRestaurants', JSON.stringify(favoriteRestaurants));
@@ -120,24 +123,5 @@ function RestaurantDetail({ restaurant }) {
     </div>
   );
 }
-
-RestaurantDetail.propTypes = {
-  restaurant: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    category: PropTypes.arrayOf(PropTypes.string).isRequired,
-    rating: PropTypes.number.isRequired,
-    reviewCount: PropTypes.number.isRequired,
-    address: PropTypes.string.isRequired,
-    phone: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    menu: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        price: PropTypes.number.isRequired
-      })
-    ).isRequired
-  }).isRequired
-};
 
 export default RestaurantDetail;

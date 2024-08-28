@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useParams } from 'react-router-dom';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
@@ -7,18 +7,19 @@ import Detail from './pages/Detail';
 import Profile from './pages/Profile';
 import RestaurantEditForm from './components/RestaurantEditForm';
 import CategoryDisplay from './components/CategoryDisplay';
-import LoginSection from './components/LoginSection'; // 로그인 섹션 컴포넌트
-import UserProfile from './components/UserProfile'; // 사용자 프로필 컴포넌트
+import LoginSection from './components/LoginSection';
+import UserProfile from './components/UserProfile';
 import './App.css';
 
 function App() {
   const [isEditingRestaurant, setIsEditingRestaurant] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false); // 관리자 여부를 false로 초기화
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState(null); // 로그인 사용자 상태 추가
+  const [loggedInUser, setLoggedInUser] = useState(null);
 
   const [likedRestaurants, setLikedRestaurants] = useState([
     {
+      id: 1,
       name: 'Restaurant 1',
       phone: '123-456-7890',
       location: 'Seoul',
@@ -34,6 +35,7 @@ function App() {
       ],
     },
     {
+      id: 2,
       name: 'Restaurant 2',
       phone: '987-654-3210',
       location: 'Busan',
@@ -101,7 +103,7 @@ function App() {
 
   const handleRestaurantSave = (updatedRestaurant) => {
     setLikedRestaurants((prev) =>
-      prev.map((r) => (r.name === updatedRestaurant.name ? updatedRestaurant : r))
+      prev.map((r) => (r.id === updatedRestaurant.id ? updatedRestaurant : r))
     );
     setIsEditingRestaurant(false);
   };
@@ -118,7 +120,7 @@ function App() {
     const reviewWithUserInfo = {
       ...newReview,
       id: reviews.length + 1,
-      userId: loggedInUser.userId, // loggedInUser에서 userId 가져오기
+      userId: loggedInUser.userId,
       date: new Date().toISOString().split('T')[0],
     };
     setReviews([...reviews, reviewWithUserInfo]);
@@ -126,8 +128,8 @@ function App() {
 
   const handleLikeToggle = (restaurant) => {
     setLikedRestaurants((prevLiked) => {
-      if (prevLiked.some((r) => r.name === restaurant.name)) {
-        return prevLiked.filter((r) => r.name !== restaurant.name);
+      if (prevLiked.some((r) => r.id === restaurant.id)) {
+        return prevLiked.filter((r) => r.id !== restaurant.id);
       } else {
         return [...prevLiked, restaurant];
       }
@@ -136,7 +138,32 @@ function App() {
 
   const handleLogout = () => {
     setLoggedInUser(null);
-    setIsAdmin(false); // 로그아웃 시 관리자 모드 초기화
+    setIsAdmin(false);
+  };
+
+  const RestaurantDetailWrapper = () => {
+    const { id } = useParams(); // useParams를 사용하여 URL에서 id를 가져옵니다.
+    const restaurant = likedRestaurants.find((r) => r.id === parseInt(id, 10));
+
+    if (!restaurant) {
+      return <div>Restaurant not found</div>;
+    }
+
+    return isEditingRestaurant ? (
+      <RestaurantEditForm restaurant={restaurant} onSave={handleRestaurantSave} />
+    ) : (
+      <Detail
+        restaurant={restaurant}
+        reviews={reviews.filter((review) => review.restaurant === restaurant.name)}
+        isAdmin={isAdmin}
+        isDeleteMode={isDeleteMode}
+        onDelete={handleDeleteReview}
+        onSubmitReview={handleReviewSubmit}
+        onLike={handleLikeToggle}
+        likedRestaurants={likedRestaurants}
+        user={loggedInUser}
+      />
+    );
   };
 
   return (
@@ -152,36 +179,12 @@ function App() {
           <div className="middle-section">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route
-                path="/details"
-                element={
-                  isEditingRestaurant ? (
-                    <RestaurantEditForm
-                      restaurant={likedRestaurants[0]}
-                      onSave={handleRestaurantSave}
-                    />
-                  ) : (
-                    <Detail
-                      restaurant={likedRestaurants[0]}
-                      reviews={reviews.filter(
-                        (review) => review.restaurant === likedRestaurants[0]?.name
-                      )}
-                      isAdmin={isAdmin}
-                      isDeleteMode={isDeleteMode}
-                      onDelete={handleDeleteReview}
-                      onSubmitReview={handleReviewSubmit}
-                      onLike={handleLikeToggle}
-                      likedRestaurants={likedRestaurants}
-                      user={loggedInUser} // 로그인된 사용자 정보 전달
-                    />
-                  )
-                }
-              />
+              <Route path="/restaurants/:id" element={<RestaurantDetailWrapper />} /> {/* 경로 매개변수 사용 */}
               <Route
                 path="/profile"
                 element={
                   <Profile
-                    userInfo={loggedInUser} // 로그인된 사용자 정보 전달
+                    userInfo={loggedInUser}
                     likedRestaurants={likedRestaurants}
                     reviews={reviews.filter(
                       (review) => review.userId === loggedInUser?.userId
