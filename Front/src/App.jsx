@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
@@ -160,8 +157,7 @@ function App() {
         <div className="content">
           <div className="left-section">
             <Routes>
-              <Route path="/"
-                element={<CategoryDisplay />} />
+              <Route path="/" element={<CategoryDisplay />} />
             </Routes>
           </div>
           <div className="middle-section">
@@ -210,17 +206,31 @@ function App() {
               <Route
                 path="/details"
                 element={
-                  <Sidebar
-                    username={userInfo.username}
-                    userId={userInfo.userId}
-                    likedStores={likedRestaurants.length}
-                    averageRating={4.3}
-                    isAdmin={isAdmin}
-                    isEditingRestaurant={isEditingRestaurant}
-                    isDeleteMode={isDeleteMode}
-                    onEditRestaurant={handleEditRestaurant}
-                    onDeleteReviews={handleDeleteReviews}
-                  />
+                  loggedInUser ? (
+                    isAdmin ? (
+                      <Sidebar
+                        username={userInfo.username}
+                        userId={userInfo.userId}
+                        likedStores={likedRestaurants.length}
+                        averageRating={4.3}
+                        isAdmin={isAdmin}
+                        isEditingRestaurant={isEditingRestaurant}
+                        isDeleteMode={isDeleteMode}
+                        onEditRestaurant={handleEditRestaurant}
+                        onDeleteReviews={handleDeleteReviews}
+                      />
+                    ) : (
+                      <UserProfile
+                        nickname={loggedInUser.nickname}
+                        image={loggedInUser.image}
+                        likes={loggedInUser.likes}
+                        reviews={loggedInUser.reviews}
+                        onLogout={handleLogout}
+                      />
+                    )
+                  ) : (
+                    <LoginSection setLoggedInUser={setLoggedInUser} />
+                  )
                 }
               />
               <Route
