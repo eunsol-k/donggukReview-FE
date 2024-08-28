@@ -6,6 +6,8 @@
   display: flex;
   flex-direction: column;
   gap: 20px; /* 아이템 간 간격 */
+  max-width: 100%; /* 최대 너비를 부모 컨테이너에 맞게 조정 */
+  box-sizing: border-box; /* 패딩과 보더를 포함한 크기 계산 */
 }
 
 .review-item {
@@ -15,16 +17,21 @@
   border-radius: 12px;
   width: 100%; /* 부모 컨테이너에 맞게 크기 조정 */
   box-sizing: border-box; /* 패딩과 보더를 포함한 크기 계산 */
+  overflow: hidden; /* 내용이 넘치지 않도록 설정 */
+  display: flex; /* 플렉스박스를 사용하여 요소 정렬 */
+  flex-direction: column; /* 요소를 수직 정렬 */
 }
 
 .review-header {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  flex-wrap: wrap; /* 플렉스 항목이 줄을 넘어가면 줄바꿈을 하도록 설정 */
 }
 
 .review-profile {
   margin-right: 15px;
+  flex-shrink: 0; /* 이미지 영역이 줄어들지 않도록 설정 */
 }
 
 .profile-img, .profile-placeholder {
@@ -63,6 +70,7 @@
   margin-top: 10px;
   font-size: 14px;
   color: #333;
+  word-wrap: break-word; /* 긴 단어가 줄바꿈되도록 설정 */
 }
 
 .review-ratings {
