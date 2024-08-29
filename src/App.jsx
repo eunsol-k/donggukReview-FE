@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import axios from 'axios';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
@@ -7,7 +8,7 @@ import Profile from './pages/Profile';
 import CategoryDisplay from './components/CategoryDisplay';
 import LoginSection from './components/LoginSection';
 import UserProfile from './components/UserProfile';
-import CafeteriaDetailWrapper from './pages/CafeteriaDetailWrapper'; // Ensure path is correct
+import CafeteriaDetailWrapper from './pages/CafeteriaDetailWrapper';
 import './App.css';
 
 function App() {
@@ -18,6 +19,20 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [likedCafeterias, setLikedCafeterias] = useState([]);
   const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    // 애플리케이션 로드 시, 저장된 토큰과 사용자 정보를 로드하여 로그인 상태를 유지
+    const token = localStorage.getItem('access_token');
+    const username = localStorage.getItem('username');
+
+    if (token && username) {
+      // Axios 기본 헤더에 토큰을 설정하여 인증된 요청을 가능하게 함
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+      // 로컬 저장소에 저장된 사용자 이름을 사용해 로그인 상태 유지
+      setLoggedInUser({ username });
+    }
+  }, []);
 
   useEffect(() => {
     if (loggedInUser) {
@@ -75,6 +90,9 @@ function App() {
   };
 
   const handleLogout = () => {
+    // 로그아웃 시, 저장된 토큰과 사용자 정보를 제거하고 상태 초기화
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('username');
     setLoggedInUser(null);
     setIsAdmin(false);
   };
@@ -133,7 +151,7 @@ function App() {
                   loggedInUser ? (
                     isAdmin ? (
                       <Sidebar
-                        username={loggedInUser.nickname}
+                        username={loggedInUser.username}
                         userId={loggedInUser.userId}
                         likedStores={likedCafeterias.length}
                         averageRating={4.3}
@@ -145,10 +163,10 @@ function App() {
                       />
                     ) : (
                       <UserProfile
-                        nickname={loggedInUser.nickname}
+                        nickname={loggedInUser.username}
                         image={loggedInUser.image}
-                        likes={loggedInUser.likes}
-                        reviews={loggedInUser.reviews}
+                        likes={likedCafeterias.length}
+                        reviews={reviews.length}
                         onLogout={handleLogout}
                       />
                     )
