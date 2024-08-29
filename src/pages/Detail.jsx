@@ -1,5 +1,6 @@
 import React from 'react';
 import './Detail.css';
+import ReviewList from '../components/ReviewList'; // ReviewList 컴포넌트 가져오기
 
 function Detail({
   cafeteria,
@@ -84,23 +85,14 @@ function Detail({
           </ul>
         </div>
       </div>
-      <div className="restaurant-reviews">
-        <h2>Reviews</h2>
-        {reviews.length === 0 ? (
-          <p>No reviews yet.</p>
-        ) : (
-          reviews.map((review) => (
-            <div key={review.id} className="review-item">
-              <p>{review.content}</p>
-              <p>{review.userId}</p>
-              <p>{review.date}</p>
-              {isAdmin && isDeleteMode && (
-                <button onClick={() => onDelete(review.id)}>Delete</button>
-              )}
-            </div>
-          ))
-        )}
-      </div>
+
+      {/* ReviewList 컴포넌트 사용 */}
+      <ReviewList
+        reviews={reviews}
+        isAdmin={isAdmin}
+        isDeleteMode={isDeleteMode}
+        onDelete={onDelete}
+      />
 
       {user && (
         <div className="review-form">
