@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Detail.css';
-import ReviewList from '../components/ReviewList'; // ReviewList 컴포넌트 가져오기
+import ReviewList from '../components/ReviewList';
+import ReviewFormModal from '../components/ReviewFormModal';
 
 function Detail({
   cafeteria,
@@ -14,23 +15,19 @@ function Detail({
   onLike,
   likedCafeterias,
 }) {
+  const [isReviewing, setIsReviewing] = useState(false); // 리뷰 모달 상태 관리
+
+  const handleReviewButtonClick = () => {
+    setIsReviewing(true); // 모달 열기
+  };
+
+  const handleCloseModal = () => {
+    setIsReviewing(false); // 모달 닫기
+  };
+
   if (!cafeteria) {
     return <div>음식점을 찾을 수 없습니다.</div>;
   }
-
-  const renderStars = () => {
-    const fullStars = Math.floor(cafeteria.rating || 0);
-    const halfStar = (cafeteria.rating || 0) % 1 !== 0;
-    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-
-    return (
-      <div className="rating-stars">
-        {Array(fullStars).fill(0).map((_, i) => <span key={i} className="filled-star">★</span>)}
-        {halfStar && <span className="half-filled-star">★</span>}
-        {Array(emptyStars).fill(0).map((_, i) => <span key={i} className="empty-star">★</span>)}
-      </div>
-    );
-  };
 
   return (
     <div className="restaurant-detail">
@@ -61,7 +58,6 @@ function Detail({
       <div className="restaurant-info">
         <p className="restaurant-category">{cafeteria.cafeteriaCategory}</p>
         <div className="restaurant-rating">
-          {renderStars()}
           <span className="rating-score">{cafeteria.rating ? cafeteria.rating.toFixed(1) : 'N/A'}</span>
           <span className="review-count">({reviews.length}명의 평가)</span>
         </div>
@@ -86,31 +82,24 @@ function Detail({
         </div>
       </div>
 
-      {/* ReviewList 컴포넌트 사용 */}
+      {user && (
+        <>
+          <button onClick={handleReviewButtonClick}>리뷰 작성</button> {/* 리뷰 작성 버튼 */}
+          {isReviewing && (
+            <ReviewFormModal
+              onSubmit={onSubmitReview}
+              closeModal={handleCloseModal} // 모달 닫기 핸들러 전달
+            />
+          )}
+        </>
+      )}
+
       <ReviewList
         reviews={reviews}
         isAdmin={isAdmin}
         isDeleteMode={isDeleteMode}
         onDelete={onDelete}
       />
-
-      {user && (
-        <div className="review-form">
-          <h2>Write a Review</h2>
-          <form onSubmit={(e) => {
-            e.preventDefault();
-            const newReview = {
-              content: e.target.reviewContent.value,
-              cafeteriaId: cafeteria.cafeteriaId,
-            };
-            onSubmitReview(newReview);
-            e.target.reset();
-          }}>
-            <textarea name="reviewContent" required></textarea>
-            <button type="submit">Submit</button>
-          </form>
-        </div>
-      )}
     </div>
   );
 }
