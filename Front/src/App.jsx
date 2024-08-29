@@ -117,7 +117,12 @@ function App() {
         <Header />
         <div className="content">
           <div className="left-section">
-            <CategoryDisplay onCategorySelect={setSelectedCategory} /> {/* 카테고리 선택 핸들러 추가 */}
+            <Routes>
+              <Route
+                path="/"
+                element={<CategoryDisplay onCategorySelect={setSelectedCategory} />}
+              />
+            </Routes>
           </div>
           <div className="middle-section">
             <Routes>
