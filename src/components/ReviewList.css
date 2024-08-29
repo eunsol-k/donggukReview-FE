@@ -1,0 +1,129 @@
+.review-list {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 아이템 간 간격 */
+  max-width: 100%; /* 최대 너비를 부모 컨테이너에 맞게 조정 */
+  box-sizing: border-box; /* 패딩과 보더를 포함한 크기 계산 */
+}
+
+.review-item {
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  width: 100%; /* 부모 컨테이너에 맞게 크기 조정 */
+  box-sizing: border-box; /* 패딩과 보더를 포함한 크기 계산 */
+  overflow: hidden; /* 내용이 넘치지 않도록 설정 */
+  display: flex; /* 플렉스박스를 사용하여 요소 정렬 */
+  flex-direction: column; /* 요소를 수직 정렬 */
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap; /* 플렉스 항목이 줄을 넘어가면 줄바꿈을 하도록 설정 */
+}
+
+.review-profile {
+  margin-right: 15px;
+  flex-shrink: 0; /* 이미지 영역이 줄어들지 않도록 설정 */
+}
+
+.profile-img, .profile-placeholder {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-placeholder {
+  background-color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+}
+
+.review-author {
+  display: flex;
+  flex-direction: column;
+}
+
+.review-userid {
+  font-size: 14px;
+  color: #666;
+}
+
+.review-date {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.review-content {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+  word-wrap: break-word; /* 긴 단어가 줄바꿈되도록 설정 */
+}
+
+.review-ratings {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+.star-rating {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.star-rating.large .star {
+  font-size: 18px;
+}
+
+.star-rating.medium .star {
+  font-size: 14px;
+}
+
+.star-rating.small .star {
+  font-size: 12px;
+}
+
+.star {
+  color: #ddd;
+}
+
+.star.filled {
+  color: #f5a623;
+}
+
+.star.half-filled {
+  position: relative;
+}
+
+.star.half-filled::before {
+  content: '★';
+  position: absolute;
+  left: 0;
+  width: 50%;
+  overflow: hidden;
+  color: #f5a623;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .review-list {
+    padding: 15px;
+  }
+
+  .review-item {
+    padding: 15px;
+  }
+}
