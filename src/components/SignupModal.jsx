@@ -6,74 +6,65 @@ const SignupModal = ({ isOpen, onClose }) => {
   const [nickname, setNickname] = useState('');
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
-  // const [profileImage, setProfileImage] = useState(null);  // 이미지 파일 상태 제거
+  const [profileImage, setProfileImage] = useState(null);  // 이미지 파일 상태 제거
   const [message, setMessage] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = async (event) => {
+		event.preventDefault()
 
-    // JSON 데이터를 생성
+		// JSON 데이터를 생성
     const data = {
       userId: id,
       userNickname: nickname,
       userPassword: password
     };
 
-    // JSON 데이터를 문자열로 변환
-    const jsonData = JSON.stringify(data);
+    console.log("id: " + id);
+    console.log("nickname: " + nickname);
+    console.log("password: " + password);
 
-    // JSON 데이터를 Blob으로 변환
-    const blobData = new Blob([jsonData], { type: 'application/json' });
+		const jsonData = JSON.stringify(data)
+		const blobData = new Blob([jsonData], { type: 'application/json' });
 
-    // FormData 생성
-    const formData = new FormData();
-    formData.append('data', blobData); // JSON 데이터를 Blob으로 추가
-
-
-    if (profileImage) {
+		const formData = new FormData()
+		formData.append('data', blobData)
+		if (profileImage) {
       formData.append('file', profileImage[0]); // 선택된 파일을 추가
     }
 
-    // 서버에 요청 전송
-    axios({
-      method: 'POST',
-      url: `${SERVER_ROOT}/register`,
-      data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-    .then((response) => {
-      // 서버 응답이 성공적(HTTP 상태 코드 200)인지 확인합니다.
-      if (response.status === 200) {
+		await axios({
+        method: 'POST',
+        url: 'http://18.116.28.134:8080/register',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+			.then(res => {
+				console.log("[signupModal] > " + JSON.stringify(res.data));
+        console.log("id: " + id);
+        console.log("nickname: " + nickname);
+        console.log("password: " + password);
 
-        // 성공적인 응답이 도착하면 성공 메시지를 상태로 설정합니다.
-        setMessage('회원가입에 성공했습니다!');
-
-        // 입력 필드들을 초기화합니다.
-        setNickname('');  // 닉네임 필드 초기화
-        setId('');        // 아이디 필드 초기화
-        setPassword('');  // 비밀번호 필드 초기화
-        // setProfileImage(null);  // 프로필 이미지 필드 초기화 제거
-
-      } else {  // 응답이 200이 아닌 경우
-        console.log(response.status);
-        // 실패 메시지를 상태로 설정하여 사용자에게 알립니다.
-        setMessage('회원가입에 실패했습니다. 나중에 다시 시도해주세요.');
-      }
-    })
-    .catch((error) => {  // 요청이 실패한 경우
-      // 콘솔에 오류 내용을 출력하여 디버깅에 도움을 줍니다.
-      console.error('회원가입 실패:', error);
-
-      // 실패 메시지를 상태로 설정하여 사용자에게 알립니다.
-      setMessage('회원가입에 실패했습니다. 나중에 다시 시도해주세요.');
-    });
-  };
-
+				if (res.status === 201) {
+					if (res.status === 201) {
+            setMessage('회원 가입에 성공했습니다!');
+          }
+				} else {
+					setMessage('회원 가입에 실패했습니다。');
+				}
+			})
+			.catch(err => {
+				console.log("[signupModal] Error > " + err);
+        console.log("id: " + id);
+        console.log("nickname: " + nickname);
+        console.log("password: " + password);
+			})
+	}
 
   const handleImageChange = (event) => {
     setProfileImage(event.target.files); // 선택된 파일을 상태로 설정
+    console.log("nickname: ", password)
   };
 
 
@@ -89,7 +80,7 @@ const SignupModal = ({ isOpen, onClose }) => {
             <input
               type="text"
               value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
+              onChange={(e) => {setNickname(e.target.value); console.log("nickname: ", nickname)}}
               required
             />
           </div>
@@ -98,7 +89,7 @@ const SignupModal = ({ isOpen, onClose }) => {
             <input
               type="text"
               value={id}
-              onChange={(e) => setId(e.target.value)}
+              onChange={(e) => {setId(e.target.value); console.log("id: ", id)}}
               required
             />
           </div>
@@ -107,7 +98,7 @@ const SignupModal = ({ isOpen, onClose }) => {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {setPassword(e.target.value); console.log("password: ", password)}}
               required
             />
           </div>
@@ -116,10 +107,11 @@ const SignupModal = ({ isOpen, onClose }) => {
               <input
                 type="file"
                 onChange={handleImageChange}
-                accept="image/*"
+                id="file" name="file"
+                // accept="image/*"
               />
             </div>
-          <button type="submit"onClick={handleSubmit}>회원가입</button>
+          <button type="submit" onClick={handleSubmit}>회원가입</button>
         </form>
         {message && <p>{message}</p>}
       </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import SignupModal from './SignupModal';
 
 const LoginSection = ({ setLoggedInUser }) => {
@@ -6,30 +7,40 @@ const LoginSection = ({ setLoggedInUser }) => {
   const [password, setPassword] = useState('');
   const [isSignupOpen, setIsSignupOpen] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault()
 
-    // 임의 계정 확인
-    if (username === 'admin' && password === '1234') {
-      alert('로그인 성공!');
-      // 임의로 토큰 생성 (실제 구현에서는 서버로부터 JWT 토큰 등을 받게 됨)
-      const token = 'dummy-token';
-      localStorage.setItem('token', token);
+		const formData = new FormData()
+		formData.append('username', username)
+		formData.append('password', password)
 
-      // 임의의 좋아요 수와 후기 수, 유저가 입력한 likes와 reviews값을 입력해야할 예정
-      const likes = 0;
-      const reviews = 0;
+		await axios({
+			method: 'POST',
+			url: 'http://18.116.28.134:8080/login',
+			data: formData
+		})
+			.then(res => {
+				if (res.status === 200) {
+					// JWT 토큰 저장
+					let token = res.headers['token']
+					let username = res.headers['username']
 
-      setLoggedInUser({
-        nickname: '관리자',
-        image: 'https://via.placeholder.com/100',
-        token: token,
-        likes: likes,
-        reviews: reviews,
-      });
-    } else {
-      alert('로그인 실패: 잘못된 자격 증명');
-    }
+					localStorage.setItem("access_token", token);
+					localStorage.setItem("username", username);
+
+          console.log("token: ", token)
+          console.log("username: ", username)
+
+          console.log("로그인 성공")
+          alert(`로그인 성공! token: ${token}, username: ${username}`)
+
+				} else {
+					alert(`⚠️ 로그인에 실패했습니다.`)
+				}
+			})
+			.catch(err => {
+				console.log("[login] > " + err);
+			})
   };
 
   return (
