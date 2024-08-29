@@ -12,7 +12,7 @@ const SignupModal = ({ isOpen, onClose }) => {
   const handleSubmit = async (event) => {
 		event.preventDefault()
 
-		// JSON 데이터를 생성
+// JSON 데이터를 생성
     const data = {
       userId: id,
       userNickname: nickname,
