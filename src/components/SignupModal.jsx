@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from 'axios';       //
+import { SERVER_ROOT } from '../config/config'
 
 const SignupModal = ({ isOpen, onClose }) => {
   const [nickname, setNickname] = useState('');
@@ -35,7 +36,7 @@ const SignupModal = ({ isOpen, onClose }) => {
       // 서버에 요청 전송
       const response = await axios({
         method: 'POST',
-        url: 'http://3.142.124.240:8080/register',  // 원격 서버의 절대 URL로 변경
+        url: `${SERVER_ROOT}/register`,  // 원격 서버의 절대 URL로 변경
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data',
