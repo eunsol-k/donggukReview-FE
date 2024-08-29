@@ -1,24 +1,39 @@
-import React, { useState } from 'react';
-import Header from '../components/Header';
-import CategoryDisplay from '../components/CategoryDisplay';
-import LoginSection from '../components/LoginSection';
+import React, { useState, useEffect } from 'react';
 import SearchSection from '../components/SearchSection';
-import UserProfile from '../components/UserProfile';
-import './Home.css';  // 스타일은 여기서 적용
 
-const Home = () => {
-  const [loggedInUser, setLoggedInUser] = useState(null);
+const Home = ({ selectedCategory }) => {
+  const [restaurants, setRestaurants] = useState([]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setLoggedInUser(null);
-  };
+  useEffect(() => {
+    fetch('/api/', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setRestaurants(data))
+      .catch((error) =>
+        console.error('데이터를 가져오는 중 오류 발생:', error)
+      );
+  }, []);
 
   return (
     <div className="home-container">
       <div className="home-content">
-        <div className="home-section search-section">
-          <SearchSection />
+        <SearchSection selectedCategory={selectedCategory} restaurants={restaurants} />
+        <h2>음식점 리스트</h2>
+        <div className="restaurant-list-content">
+          {restaurants.length > 0 ? (
+            restaurants.map((restaurant) => (
+              <div key={restaurant.cafeteriaId} className="restaurant-item">
+                <h3>{restaurant.cafeteriaName}</h3>
+                <p>{restaurant.cafeteriaCategory}</p>
+              </div>
+            ))
+          ) : (
+            <p>음식점 정보를 불러오는 중...</p>
+          )}
         </div>
       </div>
     </div>
@@ -26,5 +41,3 @@ const Home = () => {
 };
 
 export default Home;
-
-

@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-const SearchSection = () => {
+const SearchSection = ({ selectedCategory }) => {
   const [query, setQuery] = useState('');
   const [restaurants, setRestaurants] = useState([]);
   const [filteredResults, setFilteredResults] = useState([]);
 
   useEffect(() => {
-    // JSON 파일에서 데이터 가져오기
-    fetch('/restaurants_info.json')
-      .then(response => response.json())
-      .then(data => {
-        setRestaurants(data);
-        setFilteredResults(data);
-      })
-      .catch(error => console.error('데이터를 가져오는 중 오류가 발생했습니다:', error));
+    fetch('/api/', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      setRestaurants(data);
+      setFilteredResults(data);
+    })
+    .catch((error) => console.error('데이터를 가져오는 중 오류가 발생했습니다:', error));
   }, []);
 
   const handleSearch = (e) => {
@@ -22,8 +26,8 @@ const SearchSection = () => {
     setQuery(searchQuery);
 
     const results = restaurants.filter(restaurant =>
-      restaurant.Name.toLowerCase().includes(searchQuery) ||
-      restaurant.Category.toLowerCase().includes(searchQuery)
+      restaurant.cafeteriaName.toLowerCase().includes(searchQuery) ||
+      restaurant.cafeteriaCategory.toLowerCase().includes(searchQuery)
     );
     setFilteredResults(results);
   };
@@ -38,12 +42,18 @@ const SearchSection = () => {
         style={styles.input}
       />
       <div style={styles.container}>
-        {filteredResults.map((restaurant, index) => (
-          <div key={index} style={styles.card}>
-            <Link to={`/restaurants/${restaurant.id}`}>
-              <img src={restaurant.Image} alt={restaurant.Name} style={styles.image} />
-              <h3>{restaurant.Name}</h3>
-              <p>{restaurant.Category}</p>
+        {filteredResults.map((restaurant) => (
+          <div key={restaurant.cafeteriaId} style={styles.card}>
+            <Link to={`/restaurants/${restaurant.cafeteriaId}`}>
+              <img
+                src={restaurant.storedFilePath.startsWith('http')
+                      ? restaurant.storedFilePath
+                      : `http://18.116.28.134:8080${restaurant.storedFilePath}`}
+                alt={restaurant.cafeteriaName}
+                style={styles.image}
+              />
+              <h3>{restaurant.cafeteriaName}</h3>
+              <p>{restaurant.cafeteriaCategory}</p>
             </Link>
           </div>
         ))}

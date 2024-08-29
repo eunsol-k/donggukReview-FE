@@ -2,26 +2,41 @@ import React, { useState, useEffect } from 'react';
 
 const CategoryDisplay = () => {
   const [categories, setCategories] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // JSON 파일에서 데이터 가져오기
-    fetch('/restaurants_info.json')
-      .then(response => response.json())
-      .then(data => {
-        // Category 추출 및 중복 제거
-        const uniqueCategories = [...new Set(data.map(item => item.Category))];
+    fetch('/api/', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const uniqueCategories = [
+          ...new Set(data.map((item) => item.cafeteriaCategory)),
+        ];
         setCategories(uniqueCategories);
       })
-      .catch(error => console.error('데이터를 가져오는 중 오류가 발생했습니다:', error));
+      .catch((error) => {
+        console.error('데이터를 가져오는 중 오류가 발생했습니다:', error);
+        setError(error.message);
+      });
   }, []);
 
   return (
     <div style={styles.container}>
-      {categories.map((category, index) => (
-        <div key={index} style={styles.category}>
-          {category}
-        </div>
-      ))}
+      {error ? (
+        <p style={{ color: 'red' }}>오류 발생: {error}</p>
+      ) : categories.length > 0 ? (
+        categories.map((category) => (
+          <div key={category} style={styles.category}>
+            {category}
+          </div>
+        ))
+      ) : (
+        <p>카테고리를 불러오는 중...</p>
+      )}
     </div>
   );
 };
@@ -39,7 +54,7 @@ const styles = {
     borderRadius: '8px',
     textAlign: 'center',
     backgroundColor: '#f9f9f9',
-  }
+  },
 };
 
 export default CategoryDisplay;
