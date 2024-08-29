@@ -16,7 +16,7 @@ const LoginSection = ({ setLoggedInUser }) => {
       const token = 'dummy-token';
       localStorage.setItem('token', token);
 
-      // 임의의 좋아요 수와 후기 수
+      // 임의의 좋아요 수와 후기 수, 유저가 입력한 likes와 reviews값을 입력해야할 예정
       const likes = 0;
       const reviews = 0;
 

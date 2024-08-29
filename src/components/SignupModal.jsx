@@ -34,7 +34,6 @@ const SignupModal = ({ isOpen, onClose }) => {
       formData.append('file', profileImage[0]); // 선택된 파일을 추가
     }
 
-
     // 서버에 요청 전송
     axios({
       method: 'POST',
