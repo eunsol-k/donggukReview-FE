@@ -1,0 +1,222 @@
+.restaurant-detail {
+  background-color: #ffffff;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.restaurant-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.restaurant-name {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.favorite-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.3s ease;
+}
+
+.favorite-button.active {
+  color: #ff4b4b;
+}
+
+.favorite-button:hover {
+  color: #ff6b6b;
+  transform: scale(1.1);
+}
+
+.restaurant-images {
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 20px;
+}
+
+.main-image {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.restaurant-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.restaurant-category {
+  font-size: 16px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.restaurant-rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.rating-stars {
+  display: flex;
+  margin-right: 10px;
+}
+
+.filled-star,
+.empty-star,
+.half-filled-star {
+  font-size: 18px;
+}
+
+.filled-star {
+  color: #f5a623;
+}
+
+.half-filled-star {
+  color: #f5a623;
+  position: relative;
+}
+
+.half-filled-star::before {
+  content: '★';
+  position: absolute;
+  left: 0;
+  width: 50%;
+  overflow: hidden;
+  color: #f5a623;
+}
+
+.empty-star {
+  color: #ddd;
+}
+
+.rating-score {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-right: 10px;
+}
+
+.review-count {
+  font-size: 14px;
+  color: #666;
+}
+
+.restaurant-meta {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.address,
+.phone {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.restaurant-menu {
+  width: 100%;
+}
+
+.restaurant-menu h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.restaurant-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.restaurant-menu li {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.menu-item-name {
+  font-weight: bold;
+  color: #555;
+}
+
+.menu-item-price {
+  color: #999;
+}
+
+.restaurant-reviews {
+  width: 100%;
+}
+
+.review-form {
+  margin-bottom: 20px;
+}
+
+.review-form textarea {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.review-form button {
+  background-color: #ff4b4b;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.review-form button:hover {
+  background-color: #ff6b6b;
+}
+
+.review-item {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .restaurant-detail {
+    padding: 20px;
+  }
+
+  .restaurant-name {
+    font-size: 20px;
+  }
+
+  .main-image {
+    max-height: 200px;
+  }
+
+  .restaurant-menu h2 {
+    font-size: 18px;
+  }
+}

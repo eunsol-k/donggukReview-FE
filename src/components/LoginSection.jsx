@@ -1,74 +1,46 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import SignupModal from './SignupModal';
 
-const LoginSection = ({ setLoggedInUser, setIsAdmin }) => {  // setIsAdmin 추가
+const LoginSection = ({ setLoggedInUser }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isSignupOpen, setIsSignupOpen] = useState(false);
 
-  const handleLogin = (username) => {
-    if (username === 'admin') {
-      // 관리자 로그인
-      alert('관리자 로그인 성공!');
-      const token = 'admin-token';
-      localStorage.setItem('token', token);
+  const handleSubmit = async (event) => {
+    event.preventDefault()
 
-      const likes = 42;
-      const reviews = 15;
+		const formData = new FormData()
+		formData.append('username', username)
+		formData.append('password', password)
 
-      setLoggedInUser({
-        nickname: '관리자',
-        image: 'https://via.placeholder.com/100',
-        token: token,
-        likes: likes,
-        reviews: reviews,
-        isAdmin: true,
-      });
-      setIsAdmin(true); // 관리자 모드 활성화
-    } else if (username === 'testuser') {
-      // 테스트 사용자 로그인
-      alert('테스트 사용자 로그인 성공!');
-      const token = 'testuser-token';
-      localStorage.setItem('token', token);
+		await axios({
+			method: 'POST',
+			url: 'http://18.116.28.134:8080/login',
+			data: formData
+		})
+			.then(res => {
+				if (res.status === 200) {
+					// JWT 토큰 저장
+					let token = res.headers['token']
+					let username = res.headers['username']
 
-      const likes = 20;
-      const reviews = 5;
+					localStorage.setItem("access_token", token);
+					localStorage.setItem("username", username);
 
-      setLoggedInUser({
-        nickname: '테스트 사용자',
-        image: 'https://via.placeholder.com/100',
-        token: token,
-        likes: likes,
-        reviews: reviews,
-        isAdmin: false,
-      });
-      setIsAdmin(false); // 일반 사용자 모드
-    } else if (username && password) {
-      // 임의의 일반 사용자 로그인
-      alert('일반 사용자 로그인 성공!');
-      const token = `user-token-${username}`;
-      localStorage.setItem('token', token);
+          console.log("token: ", token)
+          console.log("username: ", username)
 
-      const likes = 20;
-      const reviews = 5;
+          console.log("로그인 성공")
+          alert(`로그인 성공! token: ${token}, username: ${username}`)
 
-      setLoggedInUser({
-        nickname: username,
-        image: 'https://via.placeholder.com/100',
-        token: token,
-        likes: likes,
-        reviews: reviews,
-        isAdmin: false,
-      });
-      setIsAdmin(false); // 일반 사용자 모드
-    } else {
-      alert('로그인 실패: 잘못된 자격 증명');
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleLogin(username);
+				} else {
+					alert(`⚠️ 로그인에 실패했습니다.`)
+				}
+			})
+			.catch(err => {
+				console.log("[login] > " + err);
+			})
   };
 
   return (

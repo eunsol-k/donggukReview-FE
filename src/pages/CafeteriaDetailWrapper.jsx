@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import Detail from './Detail'; // Import the Detail component
+import Detail from './Detail'; // Detail 컴포넌트 가져오기
 
 const CafeteriaDetailWrapper = ({
   isEditingCafeteria,
   onEditCafeteria,
   onLike,
   likedCafeterias,
-  reviews,
   isAdmin,
   isDeleteMode,
   onDelete,
   onSubmitReview,
-  onDeleteReviews,
   loggedInUser,
 }) => {
-  const { id } = useParams(); // Get the ID from the URL
-  const [cafeteria, setCafeteria] = useState(null);
+  const { id } = useParams(); // URL에서 음식점 ID 가져오기
+  const [cafeteriaData, setCafeteriaData] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [menu, setMenu] = useState([]);
 
   useEffect(() => {
-    // Fetch cafeteria details based on the ID
+    // 음식점 상세 정보 가져오기
     const fetchCafeteria = async () => {
       try {
         const response = await fetch(`/api/cafeteria/${id}`);
         const data = await response.json();
         if (data.cafeteriaResponseDTO) {
-          setCafeteria(data.cafeteriaResponseDTO);
+          setCafeteriaData(data.cafeteriaResponseDTO);
+          setReviews(data.reviewResponseDTOList || []);
+          setMenu(data.menuDTOList || []);
         } else {
           console.error('Invalid data structure:', data);
         }
@@ -37,14 +39,15 @@ const CafeteriaDetailWrapper = ({
     fetchCafeteria();
   }, [id]);
 
-  if (!cafeteria) {
+  if (!cafeteriaData) {
     return <div>Loading...</div>;
   }
 
   return (
     <Detail
-      cafeteria={cafeteria}
+      cafeteria={cafeteriaData}
       reviews={reviews}
+      menu={menu}
       isAdmin={isAdmin}
       isDeleteMode={isDeleteMode}
       onDelete={onDelete}

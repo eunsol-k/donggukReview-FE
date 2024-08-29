@@ -2,22 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './CafeteriaDetail.css';
 
-function RestaurantDetail({ restaurant }) {
+function RestaurantDetail({ restaurantData }) {
   const { id } = useParams();
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(restaurantData.like || false);
 
   useEffect(() => {
     const favoriteRestaurants = JSON.parse(localStorage.getItem('favoriteRestaurants') || '[]');
-    setIsFavorite(favoriteRestaurants.includes(restaurant.cafeteriaId));
-  }, [restaurant.cafeteriaId]);
+    setIsFavorite(favoriteRestaurants.includes(restaurantData.cafeteriaResponseDTO.cafeteriaId));
+  }, [restaurantData.cafeteriaResponseDTO.cafeteriaId]);
 
   const toggleFavorite = () => {
     let favoriteRestaurants = JSON.parse(localStorage.getItem('favoriteRestaurants') || '[]');
 
     if (isFavorite) {
-      favoriteRestaurants = favoriteRestaurants.filter((favId) => favId !== restaurant.cafeteriaId);
+      favoriteRestaurants = favoriteRestaurants.filter(
+        (favId) => favId !== restaurantData.cafeteriaResponseDTO.cafeteriaId
+      );
     } else {
-      favoriteRestaurants.push(restaurant.cafeteriaId);
+      favoriteRestaurants.push(restaurantData.cafeteriaResponseDTO.cafeteriaId);
     }
 
     localStorage.setItem('favoriteRestaurants', JSON.stringify(favoriteRestaurants));
@@ -25,8 +27,8 @@ function RestaurantDetail({ restaurant }) {
   };
 
   const renderStars = () => {
-    const fullStars = Math.floor(restaurant.rating);
-    const halfStar = restaurant.rating % 1 !== 0;
+    const fullStars = Math.floor(restaurantData.rating || 0);
+    const halfStar = (restaurantData.rating || 0) % 1 !== 0;
     const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
     return (
@@ -38,10 +40,16 @@ function RestaurantDetail({ restaurant }) {
     );
   };
 
+  if (!restaurantData) {
+    return <div>Loading...</div>;
+  }
+
+  const { cafeteriaResponseDTO, menuDTOList, reviewResponseDTOList } = restaurantData;
+
   return (
     <div className="restaurant-detail">
       <div className="restaurant-header">
-        <h1 className="restaurant-name">{restaurant.cafeteriaName}</h1>
+        <h1 className="restaurant-name">{cafeteriaResponseDTO.cafeteriaName}</h1>
         <button
           className={`favorite-button ${isFavorite ? 'active' : ''}`}
           onClick={toggleFavorite}
@@ -50,12 +58,10 @@ function RestaurantDetail({ restaurant }) {
         </button>
       </div>
       <div className="restaurant-images">
-        {restaurant.storedFilePath ? (
+        {cafeteriaResponseDTO.storedFilePath ? (
           <img
-            src={restaurant.storedFilePath.startsWith('http')
-              ? restaurant.storedFilePath
-              : `/api${restaurant.storedFilePath}`}
-            alt={restaurant.cafeteriaName}
+            src={cafeteriaResponseDTO.storedFilePath}
+            alt={cafeteriaResponseDTO.cafeteriaName}
             className="main-image"
             onError={(e) => e.target.src = 'path/to/default-image.png'}
           />
@@ -64,24 +70,24 @@ function RestaurantDetail({ restaurant }) {
         )}
       </div>
       <div className="restaurant-info">
-        <p className="restaurant-category">{restaurant.cafeteriaCategory}</p>
+        <p className="restaurant-category">{cafeteriaResponseDTO.cafeteriaCategory}</p>
         <div className="restaurant-rating">
           {renderStars()}
-          <span className="rating-score">{restaurant.rating.toFixed(1)}</span>
-          <span className="review-count">({restaurant.reviewCount}명의 평가)</span>
+          <span className="rating-score">{restaurantData.rating ? restaurantData.rating.toFixed(1) : 'N/A'}</span>
+          <span className="review-count">({reviewResponseDTOList.length}명의 평가)</span>
         </div>
         <div className="restaurant-meta">
-          <p className="address">{restaurant.address}</p>
-          <p className="phone">{restaurant.phone}</p>
+          <p className="address">{cafeteriaResponseDTO.cafeteriaAddress}</p>
+          <p className="phone">{cafeteriaResponseDTO.cafeteriaPhone}</p>
         </div>
         <div className="restaurant-menu">
           <h2>메뉴</h2>
           <ul>
-            {restaurant.menu.length > 0 ? (
-              restaurant.menu.map((item, index) => (
-                <li key={index}>
-                  <span className="menu-item-name">{item.name}</span>
-                  <span className="menu-item-price">{item.price}원</span>
+            {menuDTOList && menuDTOList.length > 0 ? (
+              menuDTOList.map((item) => (
+                <li key={item.id}>
+                  <span className="menu-item-name">{item.menuName}</span>
+                  <span className="menu-item-price">{item.menuPrice}원</span>
                 </li>
               ))
             ) : (
@@ -89,6 +95,20 @@ function RestaurantDetail({ restaurant }) {
             )}
           </ul>
         </div>
+      </div>
+      <div className="restaurant-reviews">
+        <h2>Reviews</h2>
+        {reviewResponseDTOList && reviewResponseDTOList.length > 0 ? (
+          reviewResponseDTOList.map((review, index) => (
+            <div key={index} className="review-item">
+              <p>{review.content}</p>
+              <p>{review.userId}</p>
+              <p>{review.date}</p>
+            </div>
+          ))
+        ) : (
+          <p>No reviews yet.</p>
+        )}
       </div>
     </div>
   );
