@@ -1,34 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-const SearchSection = ({ selectedCategory }) => {
+const SearchSection = ({ selectedCategory, restaurants }) => {
   const [query, setQuery] = useState('');
-  const [restaurants, setRestaurants] = useState([]);
-  const [filteredResults, setFilteredResults] = useState([]);
+  const [filteredResults, setFilteredResults] = useState(restaurants);
 
   useEffect(() => {
-    fetch('/api/', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      setRestaurants(data);
-      setFilteredResults(data);
-    })
-    .catch((error) => console.error('데이터를 가져오는 중 오류가 발생했습니다:', error));
-  }, []);
+    filterResults();
+  }, [query, selectedCategory, restaurants]);
 
   const handleSearch = (e) => {
-    const searchQuery = e.target.value.toLowerCase();
-    setQuery(searchQuery);
+    setQuery(e.target.value.toLowerCase());
+  };
 
-    const results = restaurants.filter(restaurant =>
-      restaurant.cafeteriaName.toLowerCase().includes(searchQuery) ||
-      restaurant.cafeteriaCategory.toLowerCase().includes(searchQuery)
-    );
+  const filterResults = () => {
+    let results = restaurants;
+
+    if (selectedCategory) {
+      results = results.filter(
+        (restaurant) =>
+          restaurant.cafeteriaCategory === selectedCategory
+      );
+    }
+
+    if (query) {
+      results = results.filter(
+        (restaurant) =>
+          restaurant.cafeteriaName.toLowerCase().includes(query) ||
+          restaurant.cafeteriaCategory.toLowerCase().includes(query)
+      );
+    }
+
     setFilteredResults(results);
   };
 

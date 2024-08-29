@@ -16,40 +16,10 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null); // 선택된 카테고리 상태 추가
 
   const [likedRestaurants, setLikedRestaurants] = useState([
-    {
-      id: 1,
-      name: 'Restaurant 1',
-      phone: '123-456-7890',
-      location: 'Seoul',
-      rating: 4.5,
-      category: ['카페', '디저트'],
-      reviewCount: 43,
-      address: '서울특별시 강남구 삼성동 123',
-      image: 'https://via.placeholder.com/400x300',
-      menu: [
-        { name: '아메리카노', price: 4500 },
-        { name: '카페라떼', price: 5000 },
-        { name: '치즈케이크', price: 7000 },
-      ],
-    },
-    {
-      id: 2,
-      name: 'Restaurant 2',
-      phone: '987-654-3210',
-      location: 'Busan',
-      rating: 4.0,
-      category: ['한식', '퓨전'],
-      reviewCount: 29,
-      address: '부산광역시 해운대구 우동 456',
-      image: 'https://via.placeholder.com/400x300',
-      menu: [
-        { name: '비빔밥', price: 8000 },
-        { name: '불고기', price: 10000 },
-        { name: '떡볶이', price: 6000 },
-      ],
-    },
+    // Example data
   ]);
 
   const [reviews, setReviews] = useState([]);
@@ -62,37 +32,12 @@ function App() {
   }, [loggedInUser]);
 
   const fetchLikedRestaurants = (userId) => {
-    // 예제 데이터 초기화 시 호출
+    // Example fetch function
   };
 
   const fetchUserReviews = (userId) => {
     const exampleReviews = [
-      {
-        id: 1,
-        restaurant: 'Restaurant 1',
-        userId: userId,
-        profilePicture: 'https://via.placeholder.com/50',
-        date: '2023-08-01',
-        content: '맛있어요!',
-        photos: ['https://via.placeholder.com/100', 'https://via.placeholder.com/100'],
-        overallRating: 4.5,
-        serviceRating: 4,
-        priceRating: 5,
-        tasteRating: 4.5,
-      },
-      {
-        id: 2,
-        restaurant: 'Restaurant 2',
-        userId: userId,
-        profilePicture: 'https://via.placeholder.com/50',
-        date: '2023-08-02',
-        content: '괜찮은 식당이에요!',
-        photos: [],
-        overallRating: 4.0,
-        serviceRating: 4,
-        priceRating: 4,
-        tasteRating: 4,
-      },
+      // Example reviews data
     ];
     setReviews(exampleReviews);
   };
@@ -172,14 +117,12 @@ function App() {
         <Header />
         <div className="content">
           <div className="left-section">
-            <Routes>
-              <Route path="/" element={<CategoryDisplay />} />
-            </Routes>
+            <CategoryDisplay onCategorySelect={setSelectedCategory} /> {/* 카테고리 선택 핸들러 추가 */}
           </div>
           <div className="middle-section">
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/restaurants/:id" element={<RestaurantDetailWrapper />} /> {/* 경로 매개변수 사용 */}
+              <Route path="/" element={<Home selectedCategory={selectedCategory} />} /> {/* 선택된 카테고리를 전달 */}
+              <Route path="/restaurants/:id" element={<RestaurantDetailWrapper />} />
               <Route
                 path="/profile"
                 element={
@@ -221,22 +164,6 @@ function App() {
                         onLogout={handleLogout}
                       />
                     )
-                  ) : (
-                    <LoginSection setLoggedInUser={setLoggedInUser} />
-                  )
-                }
-              />
-              <Route
-                path="/"
-                element={
-                  loggedInUser ? (
-                    <UserProfile
-                      nickname={loggedInUser.nickname}
-                      image={loggedInUser.image}
-                      likes={loggedInUser.likes}
-                      reviews={loggedInUser.reviews}
-                      onLogout={handleLogout}
-                    />
                   ) : (
                     <LoginSection setLoggedInUser={setLoggedInUser} />
                   )

@@ -18,21 +18,27 @@ const Home = ({ selectedCategory }) => {
       );
   }, []);
 
+  const filteredRestaurants = selectedCategory
+    ? restaurants.filter(
+        (restaurant) => restaurant.cafeteriaCategory === selectedCategory
+      )
+    : restaurants;
+
   return (
     <div className="home-container">
       <div className="home-content">
-        <SearchSection selectedCategory={selectedCategory} restaurants={restaurants} />
+        <SearchSection selectedCategory={selectedCategory} restaurants={filteredRestaurants} />
         <h2>음식점 리스트</h2>
         <div className="restaurant-list-content">
-          {restaurants.length > 0 ? (
-            restaurants.map((restaurant) => (
+          {filteredRestaurants.length > 0 ? (
+            filteredRestaurants.map((restaurant) => (
               <div key={restaurant.cafeteriaId} className="restaurant-item">
                 <h3>{restaurant.cafeteriaName}</h3>
                 <p>{restaurant.cafeteriaCategory}</p>
               </div>
             ))
           ) : (
-            <p>음식점 정보를 불러오는 중...</p>
+            <p>해당 카테고리에 음식점이 없습니다.</p>
           )}
         </div>
       </div>
