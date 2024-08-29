@@ -128,24 +128,43 @@ function App() {
             <Routes>
               <Route path="/" element={<Home selectedCategory={selectedCategory} />} /> {/* 선택된 카테고리를 전달 */}
               <Route path="/restaurants/:id" element={<RestaurantDetailWrapper />} />
-              <Route
-                path="/profile"
-                element={
-                  <Profile
-                    userInfo={loggedInUser}
-                    likedRestaurants={likedRestaurants}
-                    reviews={reviews.filter(
-                      (review) => review.userId === loggedInUser?.userId
-                    )}
-                  />
-                }
-              />
+              <Route path="/profile" element={<Profile userInfo={loggedInUser} likedRestaurants={likedRestaurants} reviews={reviews.filter((review) => review.userId === loggedInUser?.userId)} />} />
             </Routes>
           </div>
           <div className="right-section">
             <Routes>
               <Route
-                path="/details"
+                path="/"
+                element={
+                  loggedInUser ? (
+                    isAdmin ? (
+                      <Sidebar
+                        username={loggedInUser.nickname}
+                        userId={loggedInUser.userId}
+                        likedStores={likedRestaurants.length}
+                        averageRating={4.3}
+                        isAdmin={isAdmin}
+                        isEditingRestaurant={isEditingRestaurant}
+                        isDeleteMode={isDeleteMode}
+                        onEditRestaurant={handleEditRestaurant}
+                        onDeleteReviews={handleDeleteReviews}
+                      />
+                    ) : (
+                      <UserProfile
+                        nickname={loggedInUser.nickname}
+                        image={loggedInUser.image}
+                        likes={loggedInUser.likes}
+                        reviews={loggedInUser.reviews}
+                        onLogout={handleLogout}
+                      />
+                    )
+                  ) : (
+                    <LoginSection setLoggedInUser={setLoggedInUser} />
+                  )
+                }
+              />
+              <Route
+                path="/restaurants/:id"
                 element={
                   loggedInUser ? (
                     isAdmin ? (

@@ -67,7 +67,7 @@ const SearchSection = ({ selectedCategory, restaurants }) => {
 const styles = {
   input: {
     padding: '10px',
-    width: '100%',
+    width: '97%',
     marginBottom: '20px',
     fontSize: '16px',
     borderRadius: '4px',
