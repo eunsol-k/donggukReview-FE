@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { SERVER_ROOT } from 'config/config'
+//import { SERVER_ROOT } from 'config/config'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -20,7 +20,7 @@ export default defineConfig({
   server: {
     proxy: {
         '/api': {
-        target: `${SERVER_ROOT}/register`, // Spring Boot 서버 주소
+        target: "http://18.116.28.134:8080", // Spring Boot 서버 주소
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, ''), // '/api' 접두사를 제거
