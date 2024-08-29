@@ -1,73 +1,53 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import SignupModal from './SignupModal';
-import UserProfile from './UserProfile';  // UserProfile 컴포넌트 가져오기
-import { SERVER_ROOT } from '../config/config';
 
 const LoginSection = ({ setLoggedInUser }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isSignupOpen, setIsSignupOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 여부 상태
-  const [userData, setUserData] = useState(null); // 사용자 데이터 상태
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-		const formData = new FormData()
-		formData.append('username', username)
-		formData.append('password', password)
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
 
-		await axios({
-			method: 'POST',
-			url: 'http://18.116.28.134:8080/login',
-			data: formData
-		})
-			.then(res => {
-				if (res.status === 200) {
-					// JWT 토큰 저장
-					let token = res.headers['token']
-					let username = res.headers['username']
+    try {
+      const res = await axios({
+        method: 'POST',
+        url: 'http://18.116.28.134:8080/login',
+        data: formData,
+      });
 
-					localStorage.setItem("access_token", token);
-					localStorage.setItem("username", username);
+      if (res.status === 200) {
+        // JWT 토큰과 사용자 이름 저장
+        const token = res.headers['token'];
+        const username = res.headers['username'];
 
-          console.log("token: ", token)
-          console.log("username: ", username)
+        localStorage.setItem("access_token", token);
+        localStorage.setItem("username", username);
 
-          console.log("로그인 성공")
-          alert(`로그인 성공! token: ${token}, username: ${username}`)
-          setIsLoggedIn(true);
+        console.log("로그인 성공");
 
-				} else {
-					alert(`⚠️ 로그인에 실패했습니다.`)
-				}
-			})
-			.catch(err => {
-				console.log("[login] > " + err);
-			})
-          };
+        // 로그인된 사용자 정보 상태 업데이트
+        setLoggedInUser({ username });
 
-          const handleLogout = () => {
-            // 로그아웃 처리
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("username");
-            setIsLoggedIn(false);
-            setUserData(null);
-            console.log("로그아웃 성공");
+        alert(`로그인 성공!`);
+
+      } else {
+        alert(`⚠️ 로그인에 실패했습니다.`);
+      }
+    } catch (err) {
+      console.log("[login] > " + err);
+      alert("로그인 중 오류가 발생했습니다.");
+    }
+  };
 
   return (
     <div>
-        {isLoggedIn ? (
-                <UserProfile
-                  nickname={userData.nickname}
-                  image={userData.profileImage}
-                  likes={userData.likes}
-                  reviews={userData.reviews}
-                  onLogout={handleLogout}
-                />
-              )
-//      <h2>로그인</h2>
+      <h2>로그인</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
