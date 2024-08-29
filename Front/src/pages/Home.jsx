@@ -28,16 +28,8 @@ const Home = ({ selectedCategory }) => {
     <div className="home-container">
       <div className="home-content">
         <SearchSection selectedCategory={selectedCategory} restaurants={filteredRestaurants} />
-        <h2>음식점 리스트</h2>
         <div className="restaurant-list-content">
-          {filteredRestaurants.length > 0 ? (
-            filteredRestaurants.map((restaurant) => (
-              <div key={restaurant.cafeteriaId} className="restaurant-item">
-                <h3>{restaurant.cafeteriaName}</h3>
-                <p>{restaurant.cafeteriaCategory}</p>
-              </div>
-            ))
-          ) : (
+          {filteredRestaurants.length === 0 && (
             <p>해당 카테고리에 음식점이 없습니다.</p>
           )}
         </div>
