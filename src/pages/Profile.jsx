@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import ProfileSection from '../components/ProfileSection';
 import ReviewList from '../components/ReviewList';
+import ReviewFormModal from '../components/ReviewFormModal';
 import './Profile.css';
 
 function ProfilePage({ userInfo }) {
   const [likedRestaurants, setLikedRestaurants] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [selectedRestaurantId, setSelectedRestaurantId] = useState(null);
 
   useEffect(() => {
     if (userInfo) {
@@ -14,61 +17,71 @@ function ProfilePage({ userInfo }) {
   }, [userInfo]);
 
   const fetchUserData = async () => {
-    // 로컬 스토리지에서 좋아요한 음식점 불러오기
-    const storedFavorites = JSON.parse(localStorage.getItem('favoriteRestaurants')) || [];
-    const exampleLikedRestaurants = storedFavorites.map(id => ({
-      name: `Restaurant ${id}`,
-      category: ['카페'],
-    }));
+    try {
+      const likedResponse = await fetch(`/api/user/likes`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      });
+      if (likedResponse.ok) {
+        const likedData = await likedResponse.json();
+        setLikedRestaurants(likedData);
+      } else {
+        console.error('Failed to fetch liked restaurants');
+      }
 
-    // 예제 리뷰 데이터 (실제 구현에서는 API 호출로 대체)
-    const exampleReviews = [
-      {
-        restaurant: 'Restaurant 1',
-        userId: userInfo.userId, // userInfo를 이용하여 사용자 ID 연결
-        content: '정말 맛있어요!',
-        date: '2023-08-01',
-      },
-      {
-        restaurant: 'Restaurant 2',
-        userId: userInfo.userId,
-        content: '서비스가 정말 좋았습니다!',
-        date: '2023-08-02',
-      },
-    ];
-
-    setLikedRestaurants(exampleLikedRestaurants);
-    setReviews(exampleReviews.filter(review => review.userId === userInfo.userId)); // 사용자 리뷰만 필터링
+      const reviewsResponse = await fetch(`/api/user/reviews`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      });
+      if (reviewsResponse.ok) {
+        const reviewsData = await reviewsResponse.json();
+        setReviews(reviewsData);
+      } else {
+        console.error('Failed to fetch reviews');
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
   };
 
-  const clearFavorites = () => {
-    // 좋아요한 음식점 초기화
-    localStorage.removeItem('favoriteRestaurants');
-    setLikedRestaurants([]); // 초기화 후 빈 배열로 설정
+  const openReviewModal = (restaurantId) => {
+    console.log("Selected restaurant ID:", restaurantId); // Debug log
+    setSelectedRestaurantId(restaurantId);
+    setIsReviewModalOpen(true);
+  };
+
+  const closeReviewModal = () => {
+    setIsReviewModalOpen(false);
+    setSelectedRestaurantId(null);
+  };
+
+  const handleReviewSubmit = (review) => {
+    console.log('Review submitted:', review);
+    setReviews(prevReviews => [...prevReviews, review]);
+    closeReviewModal();
   };
 
   if (!userInfo) {
-    // userInfo가 없을 때는 로딩 상태나 로그인 필요 메시지를 표시할 수 있습니다.
     return <div>로그인이 필요합니다.</div>;
   }
 
   return (
     <div className="profile-page">
-      <ProfileSection userInfo={userInfo} /> {/* 메인 페이지와 동일한 프로필 정보 표시 */}
+      <ProfileSection userInfo={userInfo} />
 
       <div className="profile-section liked-restaurants-section">
         <h3>좋아요 한 음식점</h3>
         {likedRestaurants.length > 0 ? (
-          <>
-            <ul>
-              {likedRestaurants.map((restaurant, index) => (
-                <li key={index}>
-                  {restaurant.name} - {restaurant.category.join(', ')}
-                </li>
-              ))}
-            </ul>
-            <button onClick={clearFavorites}>좋아요 리스트 초기화</button>
-          </>
+          <ul>
+            {likedRestaurants.map((restaurant, index) => (
+              <li key={index}>
+                {restaurant.name} - {restaurant.category.join(', ')}
+                <button onClick={() => openReviewModal(restaurant.id)}>리뷰 작성</button>
+              </li>
+            ))}
+          </ul>
         ) : (
           <p>좋아요 한 음식점이 없습니다.</p>
         )}
@@ -82,6 +95,14 @@ function ProfilePage({ userInfo }) {
           <p>작성한 댓글이 없습니다.</p>
         )}
       </div>
+
+      {isReviewModalOpen && (
+        <ReviewFormModal
+          onSubmit={handleReviewSubmit}
+          closeModal={closeReviewModal}
+          restaurantId={selectedRestaurantId}
+        />
+      )}
     </div>
   );
 }

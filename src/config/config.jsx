@@ -1,1 +1,1 @@
-export const SERVER_ROOT = "http://18.116.28.134:8080"
+export default const SERVER_ROOT = "http://3.138.114.160:8080"

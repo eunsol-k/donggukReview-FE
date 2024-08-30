@@ -4,7 +4,7 @@ import axios from 'axios';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
-import Profile from './pages/Profile';
+import ProfilePage from './pages/Profile';  // ProfilePage 컴포넌트 가져오기
 import CategoryDisplay from './components/CategoryDisplay';
 import LoginSection from './components/LoginSection';
 import UserProfile from './components/UserProfile';
@@ -20,20 +20,22 @@ function App() {
   const [likedCafeterias, setLikedCafeterias] = useState([]);
   const [reviews, setReviews] = useState([]);
 
+  // 로그인한 사용자 정보를 로컬 스토리지에서 가져와 설정
   useEffect(() => {
-    // 애플리케이션 로드 시, 저장된 토큰과 사용자 정보를 로드하여 로그인 상태를 유지
     const token = localStorage.getItem('access_token');
     const username = localStorage.getItem('username');
+    const userId = localStorage.getItem('userId');
+    const image = localStorage.getItem('image');
 
-    if (token && username) {
-      // Axios 기본 헤더에 토큰을 설정하여 인증된 요청을 가능하게 함
+    if (token && username && userId) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-      // 로컬 저장소에 저장된 사용자 이름을 사용해 로그인 상태 유지
-      setLoggedInUser({ username });
+      setLoggedInUser({ userId, nickname: username, image });
+    } else {
+      console.error('로그인 정보가 없습니다.');
     }
   }, []);
 
+  // 로그인한 사용자의 좋아요 한 음식점과 리뷰를 가져오는 함수
   useEffect(() => {
     if (loggedInUser) {
       fetchLikedCafeterias(loggedInUser.userId);
@@ -43,11 +45,15 @@ function App() {
 
   const fetchLikedCafeterias = (userId) => {
     // API call to fetch liked cafeterias
+    console.log(`Fetching liked cafeterias for userId: ${userId}`);
+    // 예시 데이터 설정
+    setLikedCafeterias([]);
   };
 
   const fetchUserReviews = (userId) => {
-    const exampleReviews = [];
-    setReviews(exampleReviews);
+    console.log(`Fetching user reviews for userId: ${userId}`);
+    // 예시 데이터 설정
+    setReviews([]);
   };
 
   const handleEditCafeteria = () => {
@@ -90,9 +96,10 @@ function App() {
   };
 
   const handleLogout = () => {
-    // 로그아웃 시, 저장된 토큰과 사용자 정보를 제거하고 상태 초기화
     localStorage.removeItem('access_token');
     localStorage.removeItem('username');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('image');
     setLoggedInUser(null);
     setIsAdmin(false);
   };
@@ -104,10 +111,7 @@ function App() {
         <div className="content">
           <div className="left-section">
             <Routes>
-              <Route
-                path="/"
-                element={<CategoryDisplay onCategorySelect={setSelectedCategory} />}
-              />
+              <Route path="/" element={<CategoryDisplay onCategorySelect={setSelectedCategory} />} />
             </Routes>
           </div>
           <div className="middle-section">
@@ -134,11 +138,15 @@ function App() {
               <Route
                 path="/profile"
                 element={
-                  <Profile
-                    userInfo={loggedInUser}
-                    likedCafeterias={likedCafeterias}
-                    reviews={reviews.filter((review) => review.userId === loggedInUser?.userId)}
-                  />
+                  loggedInUser ? (
+                    <ProfilePage
+                      userInfo={loggedInUser}
+                      likedCafeterias={likedCafeterias}
+                      reviews={reviews.filter((review) => review.userId === loggedInUser?.userId)}
+                    />
+                  ) : (
+                    <div>로그인이 필요합니다.</div>
+                  )
                 }
               />
             </Routes>
@@ -151,10 +159,6 @@ function App() {
                   loggedInUser ? (
                     isAdmin ? (
                       <Sidebar
-                        username={loggedInUser.username}
-                        userId={loggedInUser.userId}
-                        likedStores={likedCafeterias.length}
-                        averageRating={4.3}
                         isAdmin={isAdmin}
                         isEditingCafeteria={isEditingCafeteria}
                         isDeleteMode={isDeleteMode}
@@ -163,7 +167,7 @@ function App() {
                       />
                     ) : (
                       <UserProfile
-                        nickname={loggedInUser.username}
+                        nickname={loggedInUser.nickname}
                         image={loggedInUser.image}
                         likes={likedCafeterias.length}
                         reviews={reviews.length}
