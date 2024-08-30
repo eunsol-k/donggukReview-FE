@@ -16,9 +16,9 @@ function ProfileSection({ userInfo }) {
   return (
     <div className="profile-section">
       <div className="profile-info">
-        <img src={userInfo.image} alt="프로필 사진" className="profile-img" /> {/* 이미지 속성 이름 변경 */}
+        <img src={userInfo.userImagePath} alt="프로필 사진" className="profile-img" /> {/* 수정: 이미지 속성 이름 변경 */}
         <div className="profile-text">
-          <h2>{userInfo.nickname}</h2> {/* 닉네임 속성 이름 변경 */}
+          <h2>{userInfo.userName}</h2> {/* 수정: 닉네임 속성 이름 변경 */}
           <p>ID: {userInfo.userId}</p>
         </div>
       </div>

@@ -1,11 +1,11 @@
 import React from 'react';
 import LogoutButton from './LogoutButton';
 
-const UserProfile = ({ nickname, image, likes, reviews, onLogout }) => {
+const UserProfile = ({ userName, userImagePath, likes, reviews, onLogout }) => {
   return (
     <div style={styles.profileContainer}>
-      <img src={image} alt="User Profile" style={styles.profileImage} />
-      <h3>{nickname}</h3>
+      <img src={userImagePath} alt="User Profile" style={styles.profileImage} /> {/* 수정: 이미지 속성 이름 변경 */}
+      <h3>{userName}</h3> {/* 수정: 닉네임 속성 이름 변경 */}
       <div style={styles.stats}>
         <p>좋아요: {likes}개</p>
         <p>후기: {reviews}개</p>

@@ -13,6 +13,7 @@ function ProfilePage({ userInfo }) {
   const [selectedRestaurantId, setSelectedRestaurantId] = useState(null);
 
   useEffect(() => {
+    console.log('User Info:', userInfo); // Debug log
     if (userInfo) {
       fetchUserData();
     }
@@ -25,8 +26,9 @@ function ProfilePage({ userInfo }) {
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
         },
       });
-      if (likedResponse.ok) {
-        const likedData = await likedResponse.json();
+
+      if (likedResponse.status === 200) { // 수정: response.ok 대신 status 코드 확인
+        const likedData = likedResponse.data;
         setLikedRestaurants(likedData);
       } else {
         console.error('Failed to fetch liked restaurants');
@@ -37,8 +39,9 @@ function ProfilePage({ userInfo }) {
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
         },
       });
-      if (reviewsResponse.ok) {
-        const reviewsData = await reviewsResponse.json();
+
+      if (reviewsResponse.status === 200) { // 수정: response.ok 대신 status 코드 확인
+        const reviewsData = reviewsResponse.data;
         setReviews(reviewsData);
       } else {
         console.error('Failed to fetch reviews');

@@ -6,13 +6,13 @@ export default defineConfig({
   plugins: [react()],
   server: {
 //    port: 5175, // Vite 서버가 실행될 포트
-    proxy: {
-      '/api': {
-        target: 'http://3.138.114.160:8080', // Spring Boot 서버 주소
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, ''), // '/api' 접두사를 제거
-      },
+//    proxy: {
+//      '/api': {
+//        target: 'http://3.138.114.160:8080', // Spring Boot 서버 주소
+//        changeOrigin: true,
+//        secure: false,
+//        rewrite: (path) => path.replace(/^\/api/, ''), // '/api' 접두사를 제거
+//      },
     },
   },
 });
