@@ -3,6 +3,8 @@ import ProfileSection from '../components/ProfileSection';
 import ReviewList from '../components/ReviewList';
 import ReviewFormModal from '../components/ReviewFormModal';
 import './Profile.css';
+import axios from 'axios';
+import SERVER_ROOT from '../config/config';
 
 function ProfilePage({ userInfo }) {
   const [likedRestaurants, setLikedRestaurants] = useState([]);
@@ -18,7 +20,7 @@ function ProfilePage({ userInfo }) {
 
   const fetchUserData = async () => {
     try {
-      const likedResponse = await fetch(`/api/user/likes`, {
+      const likedResponse = await axios(`${SERVER_ROOT}/user/likes`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
         },
@@ -30,7 +32,7 @@ function ProfilePage({ userInfo }) {
         console.error('Failed to fetch liked restaurants');
       }
 
-      const reviewsResponse = await fetch(`/api/user/reviews`, {
+      const reviewsResponse = await axios(`${SERVER_ROOT}/user/reviews`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
         },

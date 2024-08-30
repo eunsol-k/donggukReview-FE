@@ -15,14 +15,14 @@ function Detail({
   onLike,
   likedCafeterias,
 }) {
-  const [isReviewing, setIsReviewing] = useState(false); // 리뷰 모달 상태 관리
+  const [isReviewing, setIsReviewing] = useState(false);
 
   const handleReviewButtonClick = () => {
-    setIsReviewing(true); // 모달 열기
+    setIsReviewing(true);
   };
 
   const handleCloseModal = () => {
-    setIsReviewing(false); // 모달 닫기
+    setIsReviewing(false);
   };
 
   if (!cafeteria) {
@@ -84,11 +84,12 @@ function Detail({
 
       {user && (
         <>
-          <button onClick={handleReviewButtonClick}>리뷰 작성</button> {/* 리뷰 작성 버튼 */}
+          <button onClick={handleReviewButtonClick}>리뷰 작성</button>
           {isReviewing && (
             <ReviewFormModal
               onSubmit={onSubmitReview}
-              closeModal={handleCloseModal} // 모달 닫기 핸들러 전달
+              closeModal={handleCloseModal}
+              restaurantId={cafeteria.cafeteriaId} // 여기서 전달
             />
           )}
         </>

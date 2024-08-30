@@ -1,15 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './CafeteriaDetail.css';
+import axios from 'axios';
+import SERVER_ROOT from '../config/config';
 
-function RestaurantDetail({ restaurantData }) {
+function RestaurantDetail() {
   const { id } = useParams();
-  const [isFavorite, setIsFavorite] = useState(restaurantData.like || false);
+  const [restaurantData, setRestaurantData] = useState(null);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const favoriteRestaurants = JSON.parse(localStorage.getItem('favoriteRestaurants') || '[]');
-    setIsFavorite(favoriteRestaurants.includes(restaurantData.cafeteriaResponseDTO.cafeteriaId));
-  }, [restaurantData.cafeteriaResponseDTO.cafeteriaId]);
+    axios.get(`${SERVER_ROOT}/cafeteria/${id}`)
+      .then(response => {
+        setRestaurantData(response.data);
+        const favoriteRestaurants = JSON.parse(localStorage.getItem('favoriteRestaurants') || '[]');
+        setIsFavorite(favoriteRestaurants.includes(response.data.cafeteriaResponseDTO.cafeteriaId));
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching restaurant details:', error);
+        setError('Failed to load restaurant details.');
+        setLoading(false);
+      });
+  }, [id]);
 
   const toggleFavorite = () => {
     let favoriteRestaurants = JSON.parse(localStorage.getItem('favoriteRestaurants') || '[]');
@@ -39,6 +54,14 @@ function RestaurantDetail({ restaurantData }) {
       </div>
     );
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   if (!restaurantData) {
     return <div>Loading...</div>;
