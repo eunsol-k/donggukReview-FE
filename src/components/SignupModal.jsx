@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { SERVER_ROOT } from '../config/config';
+import SERVER_ROOT from '../config/config';
 
 const SignupModal = ({ isOpen, onClose }) => {
   const [nickname, setNickname] = useState('');

@@ -58,26 +58,26 @@ function ReviewList({ reviews, isAdmin, isDeleteMode, onDelete }) {
         <div key={index} className="review-item">
           <div className="review-header">
             <div className="review-profile">
-              {review.profilePicture ? (
-                <img src={review.profilePicture} alt="프로필 사진" className="profile-img" />
+              {review.userProfileImage ? (
+                <img src={review.userProfileImage} alt="프로필 사진" className="profile-img" />
               ) : (
                 <div className="profile-placeholder">프로필</div>
               )}
             </div>
             <div className="review-author">
-              <span className="review-userid">{review.userId}</span>
+              <span className="review-username">{review.userNickname || '익명'}</span>
             </div>
             {isAdmin && isDeleteMode && (
-              <button onClick={() => onDelete(review.userId)} className="delete-button">
+              <button onClick={() => onDelete(review.reviewId)} className="delete-button">
                 삭제
               </button>
             )}
           </div>
           <div className="review-ratings">
-            {renderStars(review.overallRating, 'large')}
+            {renderStars(review.reviewRatings, 'large')}
           </div>
-          <p className="review-date">{review.date}</p>
-          {review.content && <p className="review-content">{review.content}</p>}
+          <p className="review-date">{new Date(review.date).toLocaleDateString()}</p>
+          {review.reviewContents && <p className="review-content">{review.reviewContents}</p>}
         </div>
       ))}
       {!isExpanded && visibleCount < reviews.length && (

@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import './ReviewForm.css';
+import axios from 'axios';
+import SERVER_ROOT from '../config/config';
 
-function ReviewForm({ onSubmit }) {
+function ReviewForm({ onSubmit, restaurantId }) {
   const [overallRating, setOverallRating] = useState(0);
   const [reviewContent, setReviewContent] = useState('');
 
   const handleRatingChange = (ratingSetter, value, currentRating) => {
-    if (currentRating >= value) {
-      ratingSetter(value - 0.5);  // 반개로 변경
-    } else {
-      ratingSetter(value);  // 한 개로 변경
-    }
+    ratingSetter(currentRating >= value ? value - 0.5 : value);
   };
 
   const renderStars = (rating, ratingSetter) => {
@@ -42,26 +40,64 @@ function ReviewForm({ onSubmit }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 유효성 검사: 총점이 입력되었는지 확인 (리뷰 내용은 필수가 아님)
     if (!overallRating) {
       alert('총점을 입력해주세요.');
       return;
     }
 
-    // 리뷰 데이터를 객체로 생성
+    if (!restaurantId) {
+      console.error("restaurantId is undefined");
+      alert('음식점 ID가 설정되지 않았습니다. 다시 시도해 주세요.');
+      return;
+    }
+
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    // 데이터 유효성 검사: null 값이 포함된 경우 제출하지 않음
     const review = {
-      overallRating,
-      reviewContent: reviewContent.trim(),  // 리뷰 내용을 트림하여 공백 제거
+      reviewContents: reviewContent.trim(),
+      reviewRatings: overallRating.toString(),
+      cafeteriaId: restaurantId,
     };
 
-    onSubmit(review);
+    if (!review.reviewContents || review.reviewRatings === "0") {
+      alert('리뷰 내용과 평점을 모두 입력해주세요.');
+      return;
+    }
 
-    // 폼 초기화
-    setOverallRating(0);
-    setReviewContent('');
+    console.log("Review data being sent:", review);
+
+    axios({
+      method: 'POST',
+      url: `${SERVER_ROOT}/user/reviews/${restaurantId}`,
+      data: review,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      }
+    })
+    .then(response => {
+      console.log("Server response data:", response.data);
+      if (response.status !== 201) {
+        throw new Error('Failed to submit review');
+      }
+
+      const savedReview = response.data;
+      onSubmit(savedReview);
+      setOverallRating(0);
+      setReviewContent('');
+    })
+    .catch(error => {
+      console.error('리뷰 작성 중 오류 발생:', error);
+      alert('리뷰 등록에 실패했습니다. 다시 시도해주세요.');
+    });
   };
 
   return (

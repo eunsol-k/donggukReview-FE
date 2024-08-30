@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import ReviewForm from './ReviewForm';
 import './ReviewFormModal.css';
 
-function ReviewFormModal({ onSubmit, closeModal }) {
+function ReviewFormModal({ onSubmit, closeModal, restaurantId }) {
   const handleKeyDown = (e) => {
     if (e.key === 'Escape') {
       closeModal();
@@ -12,7 +12,6 @@ function ReviewFormModal({ onSubmit, closeModal }) {
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
 
-    // Cleanup event listener on unmount
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
@@ -28,7 +27,7 @@ function ReviewFormModal({ onSubmit, closeModal }) {
         <button className="close-button" onClick={closeModal}>
           &times;
         </button>
-        <ReviewForm onSubmit={handleReviewSubmit} />
+        <ReviewForm onSubmit={handleReviewSubmit} restaurantId={restaurantId} />
       </div>
     </div>
   );
