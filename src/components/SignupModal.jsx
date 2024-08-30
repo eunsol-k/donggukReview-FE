@@ -34,7 +34,7 @@ const SignupModal = ({ isOpen, onClose }) => {
 
 		await axios({
         method: 'POST',
-        url: 'http://18.116.28.134:8080/register',
+        url: 'http://3.138.114.160:8080/register',
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data'

@@ -63,7 +63,7 @@ const SearchSection = ({ selectedCategory, restaurants }) => {
                   src={
                     restaurant.storedFilePath && restaurant.storedFilePath.startsWith('http')
                       ? restaurant.storedFilePath
-                      : `http://18.116.28.134:8080${restaurant.storedFilePath}`
+                      : `http://3.138.114.160:8080${restaurant.storedFilePath}`
                   }
                   alt={restaurant.cafeteriaName}
                   style={styles.image}

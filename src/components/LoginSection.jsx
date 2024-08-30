@@ -17,7 +17,7 @@ const LoginSection = ({ setLoggedInUser }) => {
     try {
       const res = await axios({
         method: 'POST',
-        url: 'http://18.116.28.134:8080/login',
+        url: 'http://3.138.114.160:8080/login',
         data: formData,
       });
 
