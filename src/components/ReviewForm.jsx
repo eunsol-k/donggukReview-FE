@@ -111,7 +111,7 @@ function ReviewForm({ onSubmit, restaurantId }) {
       </div>
       <div className="review-content">
         <textarea
-          placeholder="리뷰를 적어주세요 (선택 사항)"
+          placeholder="리뷰를 적어주세요"
           value={reviewContent}
           onChange={(e) => setReviewContent(e.target.value)}
         />

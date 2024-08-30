@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import SERVER_ROOT from '../config/config';
 
-const CategoryDisplay = ({ onCategorySelect }) => {
+const CategoryDisplay = ({ onCategorySelect, cafeteriaId }) => {
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('/api/', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    axios
+      .get(`${SERVER_ROOT}/`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        const data = response.data;
         const uniqueCategories = [
           ...new Set(data.map((item) => item.cafeteriaCategory)),
         ];
@@ -22,7 +24,7 @@ const CategoryDisplay = ({ onCategorySelect }) => {
         console.error('데이터를 가져오는 중 오류가 발생했습니다:', error);
         setError(error.message);
       });
-  }, []);
+  }, [cafeteriaId]);
 
   const handleCategoryClick = (category) => {
     onCategorySelect(category); // 카테고리를 클릭하면 부모 컴포넌트로 전달
